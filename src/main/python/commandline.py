@@ -15,7 +15,7 @@ parser.add_argument('--verbose', help='Level of logging to output', action="stor
 parser.add_argument('--application-filter', help='Constrain to passed application', type=str, default=None)
 parser.add_argument('--vcs-user', help='Username for VCS', type=str, default=None, required=True)
 parser.add_argument('--vcs-password', help='Password for VCS', type=str, default=None, required=True)
-parser.add_argument('--vcs-root-url', help='Root url for git repos', type=str, required=True)
+parser.add_argument('--vcs-root-user', help='Root user for bitbucket git repos', type=str, required=True)
 parser.add_argument('--service-directory', help='Directory containing service definitions in <app>/service.json format', type=str, default='../../../../services')
 parser.add_argument('--dry-run',help='Preview effect of action', action="store_true",
                          default=False)
@@ -38,7 +38,7 @@ def execute_main():
     args = parser.parse_args()
     configure_logging(args.verbose)
     application_map = load_service_definitions(args.application_filter, args.service_directory)
-    vcs = VCS(args.vcs_user, args.vcs_password, args.vcs_root_url, args.dry_run)
+    vcs = VCS(args.vcs_user, args.vcs_password, args.vcs_root_user, args.dry_run)
     if args.command == LIST:
         if args.validate_repository:
             vcs.validate_repositories(application_map)
