@@ -15,7 +15,7 @@ parser.add_argument('--verbose', help='Level of logging to output', action="stor
 parser.add_argument('--application-filter', help='Constrain to passed application', type=str, default=None)
 parser.add_argument('--vcs-user', help='Username for VCS', type=str, default=None, required=True)
 parser.add_argument('--vcs-password', help='Password for VCS', type=str, default=None, required=True)
-parser.add_argument('--repo-root', help='Root user for BitBucket', type=str, default='alienadmin')
+parser.add_argument('--vcs-root-url', help='Root url for git repos', type=str, required=True)
 parser.add_argument('--service-directory', help='Directory containing service definitions in <app>/service.json format', type=str, default='../../../../services')
 parser.add_argument('--dry-run',help='Preview effect of action', action="store_true",
                          default=False)
