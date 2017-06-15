@@ -38,7 +38,7 @@ def execute_main():
     args = parser.parse_args()
     configure_logging(args.verbose)
     application_map = load_service_definitions(args.application_filter, args.service_directory)
-    vcs = VCS(args.vcs_user, args.vcs_password, args.repo_root, args.dry_run)
+    vcs = VCS(args.vcs_user, args.vcs_password, args.vcs_root_url, args.dry_run)
     if args.command == LIST:
         if args.validate_repository:
             vcs.validate_repositories(application_map)

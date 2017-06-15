@@ -13,7 +13,7 @@ def load_service_definitions(app_root, service_directory):
     listdir = os.listdir(service_dir)
     service_map = defaultdict(dict)
     for dir in listdir:
-        if application_filter(app_root, dir):
+        if os.path.isdir(os.path.join(service_dir,dir)) and not dir.startswith('.') and application_filter(app_root, dir):
             with open(os.path.join(service_dir, dir, 'service.json')) as service_def:
                 service_map[dir] = json.load(service_def)
     return service_map
