@@ -1,11 +1,10 @@
 import json
-from collections import defaultdict
-
 import logging
 import os
 import subprocess
+from collections import defaultdict
 
-from util.log_handler import print_red_bold
+from service_manager.util.log_handler import print_red_bold
 
 REPO_URL = 'repository_url'
 

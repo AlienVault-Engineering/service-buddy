@@ -1,4 +1,4 @@
-from util.services import invoke_process
+from service_manager.util.services import invoke_process
 
 
 def create_project(self, app, definition, service, service_dir):

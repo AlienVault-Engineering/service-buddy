@@ -1,6 +1,7 @@
 import logging
-from util import services
-from util.services import walk_service_map, ensure_service_directory_exists
+
+from service_manager.util import services
+from service_manager.util.services import walk_service_map, ensure_service_directory_exists
 
 
 class Initializer(object):

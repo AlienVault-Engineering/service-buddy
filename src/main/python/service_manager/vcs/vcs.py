@@ -1,5 +1,5 @@
-from util.services import walk_service_map, _safe_mkdir, ensure_service_directory_exists, invoke_process
 from Bitbucket import BitbucketVCSProvider
+from service_manager.util.services import walk_service_map, _safe_mkdir, ensure_service_directory_exists, invoke_process
 
 
 class VCS(object):
