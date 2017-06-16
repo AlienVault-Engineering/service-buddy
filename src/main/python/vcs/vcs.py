@@ -7,14 +7,13 @@ class VCS(object):
         super(VCS, self).__init__()
         self.dry_run = dry_run
         self.default_provider = default_provider
-        self.vcs_providers={}
-        self.vcs_providers[default_provider]= BitbucketVCSProvider(user,password,repo_root,dry_run)
+        self.vcs_providers = {}
+        self.vcs_providers[default_provider] = BitbucketVCSProvider(user, password, repo_root, dry_run)
 
     def _get_default_vcs_provider(self):
         return self.vcs_providers[self.default_provider]
 
     def validate_repositories(self, application_map):
-
         def populate_repo_metadata(service_definition):
             repository_name = service_definition.get_repository_name()
             self._get_default_vcs_provider().find_repo(service_definition)
@@ -22,19 +21,18 @@ class VCS(object):
         walk_service_map(application_map=application_map, application_callback=None,
                          service_callback=populate_repo_metadata)
 
-    def init_repo(self,service_definition,service_dir):
+    def init_repo(self, service_definition, service_dir):
         repo_url = self._get_default_vcs_provider().create_repo(service_definition)
         args = ['git', 'init']
-        invoke_process(args,service_dir=service_dir,dry_run=self.dry_run)
+        invoke_process(args, service_dir=service_dir, dry_run=self.dry_run)
         args = ['git', 'add', '*', '**/*']
-        invoke_process(args,service_dir=service_dir,dry_run=self.dry_run)
-        args = ['git', 'commit', '-m','Initial commit']
-        invoke_process(args,service_dir=service_dir,dry_run=self.dry_run)
-        args = ['git', 'remote', 'add', 'origin',repo_url]
-        invoke_process(args,service_dir=service_dir,dry_run=self.dry_run)
-        args = ['git', 'push', '-u', 'origin','master']
-        invoke_process(args,service_dir=service_dir,dry_run=self.dry_run)
-
+        invoke_process(args, service_dir=service_dir, dry_run=self.dry_run)
+        args = ['git', 'commit', '-m', 'Initial commit']
+        invoke_process(args, service_dir=service_dir, dry_run=self.dry_run)
+        args = ['git', 'remote', 'add', 'origin', repo_url]
+        invoke_process(args, service_dir=service_dir, dry_run=self.dry_run)
+        args = ['git', 'push', '-u', 'origin', 'master']
+        invoke_process(args, service_dir=service_dir, dry_run=self.dry_run)
 
     def pull_services(self, application_map, destination_directory):
         _safe_mkdir(destination_directory)
@@ -44,8 +42,7 @@ class VCS(object):
             if service_defintion.had_repo():
                 clone_url = service_defintion.get_git_url()
                 args = ['git', 'clone', clone_url]
-                invoke_process(args, destination_dir,self.dry_run)
-
+                invoke_process(args, destination_dir, self.dry_run)
 
         walk_service_map(application_map=application_map, application_callback=None,
-                     service_callback=clone_repository)
+                         service_callback=clone_repository)
