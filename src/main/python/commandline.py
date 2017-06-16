@@ -1,10 +1,10 @@
 import argparse
-import logging
 
-from lib.initializer import Initializer
-from lib.log_handler import configure_logging
-from lib.services import load_service_definitions, pretty_print_services
-from lib.vcs import VCS
+from service_initializer.creators.cookie_cutter_creator import CookeCutterProjectCreator
+from service_initializer.initializer import Initializer
+from util.log_handler import configure_logging
+from util.services import load_service_definitions, pretty_print_services
+from vcs.vcs import VCS
 
 LIST = 'list'
 SYNC = 'sync'
@@ -16,7 +16,7 @@ parser.add_argument('--application-filter', help='Constrain to passed applicatio
 parser.add_argument('--vcs-user', help='Username for VCS', type=str, default=None, required=True)
 parser.add_argument('--vcs-password', help='Password for VCS', type=str, default=None, required=True)
 parser.add_argument('--vcs-root-user', help='Root user for bitbucket git repos', type=str, required=True)
-parser.add_argument('--service-directory', help='Directory containing service definitions in <app>/service.json format', type=str, default='../../../../services')
+parser.add_argument('--service-directory', help='Directory containing service definitions in <app>/service.json format', type=str)
 parser.add_argument('--dry-run',help='Preview effect of action', action="store_true",
                          default=False)
 subparsers = parser.add_subparsers(help='commands')
@@ -28,6 +28,7 @@ list_parser.add_argument('--validate-repository', help='Validate existence of re
 sync_parser = subparsers.add_parser(SYNC, help='Sync service definitions and initialize new entries.')
 sync_parser.set_defaults(command=SYNC)
 sync_parser.add_argument('--destination-directory',help='Destination directory to create new service definition.',required=True)
+sync_parser.add_argument('--service-template-definitions', help='File containing references to custom service templates.  JSON dictionary {service-type: {type: file|git, location: relative path | git URL}}', type=str, default=None)
 
 pull_parser = subparsers.add_parser(PULL, help='Pull git repos into local filesystem.')
 pull_parser.set_defaults(command=PULL)
@@ -45,7 +46,7 @@ def execute_main():
         pretty_print_services(application_map)
     elif args.command == SYNC:
         vcs.validate_repositories(application_map)
-        init = Initializer(vcs, args.destination_directory, args.dry_run)
+        init = Initializer(vcs, args.destination_directory, args.dry_run,CookeCutterProjectCreator(args.service_template_definitions,args.dry_run))
         init.initialize_services(application_map)
     elif args.command == PULL:
         vcs.validate_repositories(application_map)

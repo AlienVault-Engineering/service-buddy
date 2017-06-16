@@ -1,4 +1,10 @@
-#!/usr/bin/env python
+#!/usr/local/opt/python/bin/python2.7
+
+# -*- coding: utf-8 -*-
+import re
+import sys
 import commandline
 
-commandline.execute_main()
+if __name__ == '__main__':
+    sys.argv[0] = re.sub(r'(-script\.pyw?|\.exe)?$', '', sys.argv[0])
+    sys.exit(commandline.execute_main())
