@@ -19,6 +19,7 @@ class BitbucketVCSProvider(object):
                     password,
                     'pybitbucket@mailinator.com'))
         else:
+            logging.warn("VCS username and password not configured - assuming git executable has appropriate authorization for repo checks")
             self.client = None
         self.team_root_user = repo_root
 
@@ -33,12 +34,12 @@ class BitbucketVCSProvider(object):
                 bitbucket_url = 'ssh://git@bitbucket.org/{}'.format(fq_repository_name)
                 result = invoke_process(args=['git', 'ls-remote', bitbucket_url, '>','/dev/null'],service_dir=None,dry_run=self.dry_run)
                 if result != 0:
-                    logging.info("Could not find repository {}".format(service_definition.get_repository_name()))
+                    logging.info("Could not find repository with git executable - {}".format(service_definition.get_repository_name()))
                     return
             if bitbucket_url:
                 service_definition.set_git_url(bitbucket_url)
         except HTTPError:
-            logging.info("Could not find repository {}".format(service_definition.get_repository_name()))
+            logging.info("Could not find repository through API - {}".format(service_definition.get_repository_name()))
 
     def create_repo(self, service_defintion):
         payload = RepositoryPayload()\
