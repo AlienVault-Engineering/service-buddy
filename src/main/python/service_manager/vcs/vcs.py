@@ -15,7 +15,6 @@ class VCS(object):
 
     def validate_repositories(self, application_map):
         def populate_repo_metadata(service_definition):
-            repository_name = service_definition.get_repository_name()
             self._get_default_vcs_provider().find_repo(service_definition)
 
         walk_service_map(application_map=application_map, application_callback=None,

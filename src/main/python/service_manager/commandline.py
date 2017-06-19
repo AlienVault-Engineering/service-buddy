@@ -13,12 +13,12 @@ parser = argparse.ArgumentParser(prog="service-manager", description='Utility to
 
 parser.add_argument('--verbose', help='Level of logging to output', action="store_true", default=False)
 parser.add_argument('--application-filter', help='Constrain to passed application', type=str, default=None)
-parser.add_argument('--vcs-user', help='Username for VCS', type=str, default=None, required=True)
-parser.add_argument('--vcs-password', help='Password for VCS', type=str, default=None, required=True)
 parser.add_argument('--vcs-root-user', help='Root user for bitbucket git repos', type=str, required=True)
-parser.add_argument('--service-directory', help='Directory containing service definitions in <app>/service.json format', type=str)
+parser.add_argument('--service-directory', help='Directory containing service definitions in <app>/service.json format', type=str, required=True)
 parser.add_argument('--dry-run',help='Preview effect of action', action="store_true",
                          default=False)
+parser.add_argument('--vcs-user', help='Username for VCS', type=str, default=None, required=False)
+parser.add_argument('--vcs-password', help='Password for VCS', type=str, default=None, required=False)
 subparsers = parser.add_subparsers(help='commands')
 
 list_parser = subparsers.add_parser(LIST, help='List known services')
@@ -26,6 +26,7 @@ list_parser.set_defaults(command=LIST)
 list_parser.add_argument('--validate-repository', help='Validate existence of repository in VCS', action="store_true",
                          default=False)
 sync_parser = subparsers.add_parser(SYNC, help='Sync service definitions and initialize new entries.')
+
 sync_parser.set_defaults(command=SYNC)
 sync_parser.add_argument('--destination-directory',help='Destination directory to create new service definition.',required=True)
 sync_parser.add_argument('--service-template-definitions', help='File containing references to custom service templates.  JSON dictionary {service-type: {type: file|git, location: relative path | git URL}}', type=str, default=None)

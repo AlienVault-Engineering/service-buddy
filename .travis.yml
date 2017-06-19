@@ -1,0 +1,12 @@
+language: python
+python:
+- '2.7'
+install: 'pip install pybuilder '
+script: pyb install_dependencies install
+deploy:
+  provider: pypi
+  user: alienvault_engineering
+  distributions: "sdist"
+  server: https://upload.pypi.org/legacy/
+  password:
+    secure: jsXVxz/ifcxwXth3/sx/RYtRAlb2OHx9qiLShgUh0ADAdkOsD2NxiOmyQ77U+0m3ftIHqmoV/PvnjxkaFGoJMmEhEg5rlqsBda4+ftPDT54SM2UR/ACqBZs+l6gswo9O590K824FcbDRrcqnYvWdr9yeijfBMYk+atmmIHH67j9pqXsQdWiW8MzOP1CkXm8Wc0O1ddwqTDnKQ2m6ZVd4hEqCg54i5z3EhC3MQfmQRxZOh7PuXZllHZi+PSw3QftVfEVOaOZE25YjQ5RxUTNCL+JU+zQMCINbtpbjKcS4Ma3MLLFGOd9ZNfkJ1q9wgH3BPuZge31U006UqbmVmbVubXkCdonMW1K6JCcHFFrfnejTm3f37nJFVJvbAyfBUsJfyx7bHftyYJowMfcmF/bcM8DOY4Tc4XVu31ZK2qukC5uRpeM7gGUMN8JZpJW68ZY/AoeaeS40hHqkXyFeQJeBPY73XWRrN9uYTzLPVjNVM9jPY0UZ4tOWkcIkdH9Zj+IXNqon+t7yVNoSqG/h2CdgxYnpIAxqMtM7BQp0yq8Ff4Ydw7UOH8x2igRtrUiNxJqiWYTpbq9pMlPjGxuaJD6cEqnuC7EPqXusl7YPKeRpUxjF7Nnodicu9dP7rLRbt5tXarDHEkX4xY1eqqo6bkZBjg0wFzrZTf+11qytJf338RY=

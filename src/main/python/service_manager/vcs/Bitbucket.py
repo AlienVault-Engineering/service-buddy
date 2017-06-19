@@ -5,25 +5,38 @@ from pybitbucket.bitbucket import Client
 from pybitbucket.repository import RepositoryPayload, RepositoryForkPolicy
 from requests import HTTPError
 
+from service_manager.util.services import invoke_process
+
 
 class BitbucketVCSProvider(object):
     def __init__(self, user, password, repo_root,dry_run):
         super(BitbucketVCSProvider, self).__init__()
         self.dry_run = dry_run
-        self.client = Client(
-            BasicAuthenticator(
-                user,
-                password,
-                'pybitbucket@mailinator.com'))
+        if user and password:
+            self.client = Client(
+                BasicAuthenticator(
+                    user,
+                    password,
+                    'pybitbucket@mailinator.com'))
+        else:
+            self.client = None
         self.team_root_user = repo_root
 
     def find_repo(self, service_definition):
         fq_repository_name = "{}/{}".format(self.team_root_user, service_definition.get_repository_name())
         try:
-            repo = repository.Repository.find_repository_by_full_name(full_name=fq_repository_name,
+            if self.client:
+                repo = repository.Repository.find_repository_by_full_name(full_name=fq_repository_name,
                                                                       client=self.client)
-            if repo:
-                service_definition.set_git_url(repo.clone['ssh'])
+                bitbucket_url = repo.clone['ssh']
+            else:
+                bitbucket_url = 'ssh://git@bitbucket.org/{}'.format(fq_repository_name)
+                result = invoke_process(args=['git', 'ls-remote', bitbucket_url, '>','/dev/null'],service_dir=None,dry_run=self.dry_run)
+                if result != 0:
+                    logging.info("Could not find repository {}".format(service_definition.get_repository_name()))
+                    return
+            if bitbucket_url:
+                service_definition.set_git_url(bitbucket_url)
         except HTTPError:
             logging.info("Could not find repository {}".format(service_definition.get_repository_name()))
 
@@ -37,6 +50,8 @@ class BitbucketVCSProvider(object):
         if self.dry_run:
             logging.error("Creating repo {}".format(str(payload)))
         else:
+            if self.client == None:
+                raise Exception("VCS pass required for create repo operation")
             repo = repository.Repository.create(
                 payload=payload,
                 repository_name=service_defintion.get_fully_qualified_service_name(),

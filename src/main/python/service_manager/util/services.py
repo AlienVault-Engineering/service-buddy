@@ -114,5 +114,9 @@ def ensure_service_directory_exists(destination_directory, service_defintion ):
 def invoke_process(args, service_dir, dry_run):
     if dry_run:
         print_red_bold("\t {}".format(str(args)))
+        return 0
     else:
-        subprocess.call(args=args, cwd=service_dir)
+        arg_list = {'args':args}
+        if service_dir:
+            arg_list['cwd'] = service_dir
+        return subprocess.call(**arg_list)
