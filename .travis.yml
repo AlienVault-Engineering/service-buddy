@@ -1,7 +1,7 @@
 language: python
 python:
 - '2.7'
-install: 'pip install pybuilder '
+install: 'pip install pybuilder -P build_number=0.1.${TRAVIS_BUILD_NUMBER}'
 script: pyb install_dependencies install
 deploy:
   provider: pypi
