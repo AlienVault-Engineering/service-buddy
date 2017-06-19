@@ -44,7 +44,7 @@ optional arguments:
 
  ### Examples
  
- 1. Clone all repositories to local disk
+ 1. Clone all repositories to local disk (uses git executable)
  
  ```bash
  service-manager pull --service-directory <path to service dir> --vcs-user <user name> --vcs-password <pass> --vcs-root-url <url>
