@@ -38,7 +38,7 @@ class VCS(object):
 
         def clone_repository(service_defintion):
             destination_dir = ensure_service_directory_exists(destination_directory, service_defintion)
-            if service_defintion.had_repo():
+            if service_defintion.repo_exists():
                 clone_url = service_defintion.get_git_url()
                 args = ['git', 'clone', clone_url]
                 invoke_process(args, destination_dir, self.dry_run)
