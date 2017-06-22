@@ -1,4 +1,6 @@
 # service-manager
+
+[Build Status](https://api.travis-ci.org/AlienVault-Engineering/service-manager.png) 
 ## Installation
 
 ```bash
