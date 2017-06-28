@@ -33,3 +33,4 @@ def initialize(project):
     project.set_property("run_unit_tests_propagate_stderr",True)
     project.set_property("coverage_branch_threshold_warn", 50)
     project.include_file('service_manager',"service_initializer/creators/builtin_service_templates.json")
+    project.set_property("distutils_upload_repository","pypi")
