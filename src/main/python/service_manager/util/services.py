@@ -34,7 +34,7 @@ class Service(dict):
         self[FQN]= self.get_fully_qualified_service_name()
 
     def get_fully_qualified_service_name(self):
-        return u"{application}-{role}".format(**self)
+        return "{application}-{role}".format(**self)
 
     def get_description(self):
         return self[DESCRIPTION]
