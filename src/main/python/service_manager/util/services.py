@@ -34,7 +34,7 @@ class Service(dict):
         self[FQN]= self.get_fully_qualified_service_name()
 
     def get_fully_qualified_service_name(self):
-        return "{application}-{role}".format(**self)
+        return u"{application}-{role}".format(**self)
 
     def get_description(self):
         return self[DESCRIPTION]
@@ -86,14 +86,14 @@ def walk_service_map(application_map, application_callback, service_callback):
             if service_callback: service_callback(service_definition)
 
 
-def pretty_print_application(app): logging.error("{}".format(app))
+def pretty_print_application(app): logging.error(u"{}".format(app))
 
 
 def pretty_print_service(service_definition):
-    logging.warn("\t {}".format(service_definition.get_role()))
+    logging.warn(u"\t {}".format(service_definition.get_role()))
     for dat in service_definition:
         secondary_indent = '\t\t' if len(dat) <= 10 else '\t'
-        logging.info("\t\t {}{}- {}".format(dat, secondary_indent, service_definition[dat]))
+        logging.info(u"\t\t {}{}- {}".format(dat, secondary_indent, service_definition[dat]))
 
 
 def pretty_print_services(application_map):
@@ -113,7 +113,7 @@ def ensure_service_directory_exists(destination_directory, service_defintion ):
 
 def invoke_process(args, service_dir, dry_run):
     if dry_run:
-        print_red_bold("\t {}".format(str(args)))
+        print_red_bold(u"\t {}".format(str(args)))
         return 0
     else:
         arg_list = {'args':args}
