@@ -21,8 +21,8 @@ class Initializer(object):
         logging.info("Creating Service -{}".format(definition.get_fully_qualified_service_name()))
         destination_dir = ensure_service_directory_exists(self.destination_directory, service_defintion=definition)
         services.pretty_print_service(definition)
-        project_directory= self.project_creator.create_project(definition,destination_dir)
-        self.vcs.init_repo(definition,project_directory)
+        self.project_creator.create_project(definition,destination_dir)
+        self.vcs.create_project(definition,destination_dir)
 
     def initialize_services(self, application_map):
         walk_service_map(application_map=application_map, application_callback=None,

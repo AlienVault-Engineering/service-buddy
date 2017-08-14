@@ -35,7 +35,7 @@ class Service(dict):
         self[FQN] = self.get_fully_qualified_service_name()
 
     def get_fully_qualified_service_name(self):
-        return "{application}-{role}".format(**self)
+        return "{application}-{role}".format(**self).replace(' ','_')
 
     def get_description(self):
         return self[DESCRIPTION]
@@ -60,6 +60,9 @@ class Service(dict):
 
     def get_git_url(self):
         return self[REPO_URL]
+
+    def get_service_directory(self,app_dir):
+        return os.path.join(app_dir,self.get_fully_qualified_service_name())
 
 
 def load_service_definitions(service_directory, app_filter=None):
