@@ -2,7 +2,7 @@ from pybuilder.core import init, use_plugin
 
 use_plugin("python.core")
 use_plugin("python.install_dependencies")
-# use_plugin("python.coverage")
+use_plugin("python.coverage")
 use_plugin("python.distutils")
 use_plugin("exec")
 use_plugin("python.unittest")
@@ -31,6 +31,6 @@ def initialize(project):
     #Build and test settings
     project.set_property("run_unit_tests_propagate_stdout",True)
     project.set_property("run_unit_tests_propagate_stderr",True)
-    project.set_property("coverage_branch_threshold_warn", 50)
+    project.set_property("coverage_branch_threshold_warn", 30)
     project.include_file('service_manager',"service_initializer/creators/builtin_service_templates.json")
     project.set_property("distutils_upload_repository","pypi")

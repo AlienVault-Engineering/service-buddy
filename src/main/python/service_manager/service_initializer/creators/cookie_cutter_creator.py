@@ -28,18 +28,19 @@ class CookeCutterProjectCreator(object):
             self.service_def.update(json.load(builtin))
 
     def create_project(self, service_definition, service_dir):
-        template = self.lookup_service_template(service_definition['service-type'])
+        template = self.lookup_service_template(service_definition.get_service_type())
         if template['type'] == 'file':
             location = os.path.abspath(os.path.join(self.template_dir,template['location']))
         else:
             location = template['location']
+        extra_context = _make_cookie_safe(service_definition)
         if self.dry_run:
             logging.error("Creating project from template {} ".format(location))
         else:
             return cookiecutter(location,
-                     no_input=True,
-                     extra_context=_make_cookie_safe(service_definition),
-                     output_dir=service_dir)
+                                no_input=True,
+                                extra_context=extra_context,
+                                output_dir=service_dir)
 
     def lookup_service_template(self, service_type):
         if service_type not in self.service_def:

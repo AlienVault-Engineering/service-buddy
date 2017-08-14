@@ -1,0 +1,10 @@
+{
+  "pylib-local":{
+    "type":"file",
+    "location":"./pylib"
+  },
+  "pylib-remote":{
+    "type":"github",
+    "location":"https://github.com/AlienVault-Engineering/pylib-template"
+  }
+}

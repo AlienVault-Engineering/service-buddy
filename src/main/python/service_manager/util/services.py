@@ -14,30 +14,34 @@ DESCRIPTION = 'description'
 ROLE = 'role'
 APPLICATION = 'application'
 FQN = 'project_name'
+SERVICE_TYPE = 'service-type'
 
 
 class Application(dict):
-
-    def __init__(self,application):
+    def __init__(self, application):
         super(Application, self).__init__()
         self.application = application
 
-    def add_service(self,role,service):
+    def add_service(self, role, service):
         self[role] = service
+
 
 class Service(dict):
     def __init__(self, app, role, definition):
         super(Service, self).__init__()
+        self.update(definition)
         self[APPLICATION] = app
         self[ROLE] = role
-        self.update(definition)
-        self[FQN]= self.get_fully_qualified_service_name()
+        self[FQN] = self.get_fully_qualified_service_name()
 
     def get_fully_qualified_service_name(self):
         return "{application}-{role}".format(**self)
 
     def get_description(self):
         return self[DESCRIPTION]
+
+    def get_service_type(self):
+        return self[SERVICE_TYPE]
 
     def repo_exists(self):
         return REPOSITORY_URL in self
@@ -51,23 +55,28 @@ class Service(dict):
     def get_repository_name(self):
         return self[REPOSITORY_NAME] if REPOSITORY_NAME in self else self.get_fully_qualified_service_name()
 
-    def set_git_url(self,url):
+    def set_git_url(self, url):
         self[REPO_URL] = url
-        
+
     def get_git_url(self):
         return self[REPO_URL]
 
-def load_service_definitions(app_root, service_directory):
+
+def load_service_definitions(service_directory, app_filter=None):
     service_dir = os.path.abspath(service_directory)
     listdir = os.listdir(service_dir)
     service_map = defaultdict(dict)
     for dir in listdir:
-        if _is_valid_app(dir, service_dir) and application_filter(app_root,dir):
-            service_map[dir] = Application(dir)
-            with open(os.path.join(service_dir, dir, 'service.json')) as service_def:
-                service_definitions = json.load(service_def)
-                for role, definition in service_definitions.iteritems():
-                    service_map[dir].add_service(role,Service(app=dir, role=role, definition=definition))
+        if _is_valid_app(dir, service_dir) and application_filter(app_filter, dir):
+            service_definition_file = os.path.join(service_dir, dir, 'service.json')
+            if not os.path.exists(service_definition_file):
+                logging.warn("Found invalid application directory - no service.json exists - {}".format(service_dir))
+            else:
+                service_map[dir] = Application(dir)
+                with open(service_definition_file) as service_def:
+                    service_definitions = json.load(service_def)
+                    for role, definition in service_definitions.iteritems():
+                        service_map[dir].add_service(role, Service(app=dir, role=role, definition=definition))
     return service_map
 
 
@@ -75,8 +84,8 @@ def _is_valid_app(dir, service_dir):
     return os.path.isdir(os.path.join(service_dir, dir)) and not dir.startswith('.')
 
 
-def application_filter(app_root, application):
-    return app_root is None or application.startswith(app_root)
+def application_filter(app_filter, application):
+    return app_filter is None or application.startswith(app_filter)
 
 
 def walk_service_map(application_map, application_callback, service_callback):
@@ -100,14 +109,14 @@ def pretty_print_services(application_map):
     walk_service_map(application_map, pretty_print_application, pretty_print_service)
 
 
-def _safe_mkdir(destination_directory):
+def safe_mkdir(destination_directory):
     if not os.path.exists(destination_directory):
         os.mkdir(destination_directory)
 
 
-def ensure_service_directory_exists(destination_directory, service_defintion ):
+def ensure_service_directory_exists(destination_directory, service_defintion):
     app_dir = os.path.join(destination_directory, service_defintion.get_app())
-    _safe_mkdir(app_dir)
+    safe_mkdir(app_dir)
     return app_dir
 
 
@@ -116,7 +125,7 @@ def invoke_process(args, service_dir, dry_run):
         print_red_bold(u"\t {}".format(str(args)))
         return 0
     else:
-        arg_list = {'args':args}
+        arg_list = {'args': args}
         if service_dir:
             arg_list['cwd'] = service_dir
         return subprocess.call(**arg_list)

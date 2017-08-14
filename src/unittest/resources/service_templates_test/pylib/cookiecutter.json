@@ -1,0 +1,13 @@
+{
+    "project_name": "Name of the project",
+    "description": "A short description of the project",
+    "owner": "owner",
+    "role": "role",
+    "application": "application",
+    "service_type": "service-type",
+    "repository_url": "Full https url for repo",
+    "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '-') }}",
+    "release_date": "{% now 'local' %}",
+    "version": "0.1.0",
+    "_extensions": ["jinja2_time.TimeExtension"]
+}

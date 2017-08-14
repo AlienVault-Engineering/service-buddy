@@ -9,6 +9,10 @@ from service_manager.util.services import invoke_process
 
 
 class BitbucketVCSProvider(object):
+    @classmethod
+    def get_type(cls):
+        return 'bitbucket'
+    
     def __init__(self, user, password, repo_root,dry_run):
         super(BitbucketVCSProvider, self).__init__()
         self.dry_run = dry_run

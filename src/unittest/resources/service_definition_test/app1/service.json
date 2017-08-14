@@ -1,0 +1,10 @@
+{
+    "mail-sender":{
+        "service-type": "pylib-local",
+        "description": "Local python library"
+    },
+    "rest-api":{
+        "service-type": "pylib-remote",
+        "description": "Remoate python library"
+    }
+}

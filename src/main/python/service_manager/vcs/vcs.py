@@ -1,14 +1,28 @@
+import json
+import os
+
 from Bitbucket import BitbucketVCSProvider
-from service_manager.util.services import walk_service_map, _safe_mkdir, ensure_service_directory_exists, invoke_process
+from service_manager.util.services import walk_service_map, safe_mkdir, ensure_service_directory_exists, invoke_process
 
 
 class VCS(object):
-    def __init__(self, user, password, repo_root, dry_run, default_provider='bitbucket'):
+    def __init__(self, service_directory, dry_run):
         super(VCS, self).__init__()
+        default_path = os.path.join(service_directory, "vcs_config.json")
+        if os.path.exists(default_path):
+            with open(default_path) as fp:
+                defaults = json.load(fp)
+                self.default_provider = defaults.get('provider',None)
+                self.repo_root = defaults.get('root-user',None)
+                self.user = defaults.get('user',os.environ.get('VCS_USER'))
+                self.password = defaults.get('password',os.environ.get('VCS_PASSWORD'))
+        else:
+            raise Exception("Could not local 'vcs_config.json' in service directory")
         self.dry_run = dry_run
-        self.default_provider = default_provider
-        self.vcs_providers = {}
-        self.vcs_providers[default_provider] = BitbucketVCSProvider(user, password, repo_root, dry_run)
+        self.vcs_providers = {
+            BitbucketVCSProvider.get_type(): BitbucketVCSProvider(self.user, self.password, self.repo_root, dry_run)}
+        if self.default_provider not in self.vcs_providers:
+            raise Exception("Requested provider is not configured {}".format(self.default_provider))
 
     def _get_default_vcs_provider(self):
         return self.vcs_providers[self.default_provider]
@@ -34,7 +48,7 @@ class VCS(object):
         invoke_process(args, service_dir=service_dir, dry_run=self.dry_run)
 
     def pull_services(self, application_map, destination_directory):
-        _safe_mkdir(destination_directory)
+        safe_mkdir(destination_directory)
 
         def clone_repository(service_defintion):
             destination_dir = ensure_service_directory_exists(destination_directory, service_defintion)
