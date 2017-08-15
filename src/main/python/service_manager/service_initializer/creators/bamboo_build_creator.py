@@ -24,6 +24,6 @@ class BambooBuildCreator(object):
             '--role', definition.get_role(),
             '--fqpn', definition.get_fully_qualified_service_name(),
             '--repo-url',definition.get_git_url(),
-            '--contract-test-repo-url',definition.get_contract_test_git_url()
+            '--contract-tests-repo-url',definition.get_contract_test_git_url()
         ]
         invoke_process(args, exec_dir=self.template_dir, dry_run=self.dry_run)
