@@ -49,6 +49,7 @@ class VCS(object):
         invoke_process(args, exec_dir=service_dir, dry_run=self.dry_run)
         args = ['git', 'push', '-u', 'origin', 'master']
         invoke_process(args, exec_dir=service_dir, dry_run=self.dry_run)
+        service_definition.set_git_url(repo_url)
 
     def pull_services(self, application_map, destination_directory):
         safe_mkdir(destination_directory)
