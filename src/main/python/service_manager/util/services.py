@@ -133,6 +133,7 @@ def ensure_service_directory_exists(destination_directory, service_defintion):
 
 
 def invoke_process(args, exec_dir=None, dry_run=False):
+    print_red_bold(u"\t {}".format(str(args)))
     if dry_run:
         print_red_bold(u"\t {}".format(str(args)))
         return 0
