@@ -6,5 +6,9 @@
     "rest-api":{
         "service-type": "pylib-remote",
         "description": "Remoate python library"
+    },
+    "contract-tests":{
+        "service-type": "contract-tests",
+        "description": "Contract test for app1"
     }
 }

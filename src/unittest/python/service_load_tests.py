@@ -21,7 +21,7 @@ class ServiceLoadTestCase(ParentTestCase):
         application_map = load_service_definitions(self.service_directory, None)
         self.assertEqual(2, len(application_map), "Did not load all applications")
         app1 = application_map['app1']
-        self.assertEqual(2, len(app1), "Did not load all services for app1")
+        self.assertEqual(3, len(app1), "Did not load all services for app1")
         self._validate_service_definition(app1)
         app2 = application_map['app2']
         self.assertEqual(2, len(app2), "Did not load all services for app2")
@@ -32,7 +32,7 @@ class ServiceLoadTestCase(ParentTestCase):
         application_map = load_service_definitions(self.service_directory, 'app1')
         self.assertEqual(1, len(application_map), "Did not load only app1")
         app1 = application_map['app1']
-        self.assertEqual(2, len(app1), "Did not load all services for app1")
+        self.assertEqual(3, len(app1), "Did not load all services for app1")
         self._validate_service_definition(app1)
 
     def _validate_service_definition(self, app):
@@ -41,3 +41,4 @@ class ServiceLoadTestCase(ParentTestCase):
             self.assertTrue(value.get_description() is not None, "Did not load service description for {}".format(key))
             self.assertTrue(value.get_repository_name() is not None, "Did not load service repo name for {}".format(key))
             self.assertTrue(value.repo_exists() is False, "Did not give rational response {}".format(key))
+            self.assertTrue(value.get_contract_test_git_url() is None, "Did not get git url as expected")

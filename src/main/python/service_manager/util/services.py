@@ -25,11 +25,17 @@ class Application(dict):
     def add_service(self, role, service):
         self[role] = service
 
+    def get_contract_test_git_url(self):
+        for name,definition in self.iteritems():
+            if definition.get_service_type() == 'contract-tests':
+                return definition.get_git_url()
+
 
 class Service(dict):
-    def __init__(self, app, role, definition):
+    def __init__(self, app, role, definition, app_reference=None):
         super(Service, self).__init__()
         self.update(definition)
+        self.app_ref = app_reference
         self[APPLICATION] = app
         self[ROLE] = role
         self[FQN] = self.get_fully_qualified_service_name()
@@ -59,7 +65,10 @@ class Service(dict):
         self[REPO_URL] = url
 
     def get_git_url(self):
-        return self[REPO_URL]
+        return self.get(REPO_URL,None)
+
+    def get_contract_test_git_url(self):
+        return self.app_ref.get_contract_test_git_url()
 
     def get_service_directory(self,app_dir):
         return os.path.join(app_dir,self.get_fully_qualified_service_name())
@@ -79,7 +88,7 @@ def load_service_definitions(service_directory, app_filter=None):
                 with open(service_definition_file) as service_def:
                     service_definitions = json.load(service_def)
                     for role, definition in service_definitions.iteritems():
-                        service_map[dir].add_service(role, Service(app=dir, role=role, definition=definition))
+                        service_map[dir].add_service(role, Service(app=dir, role=role, definition=definition, app_reference=service_map[dir]))
     return service_map
 
 
@@ -123,12 +132,12 @@ def ensure_service_directory_exists(destination_directory, service_defintion):
     return app_dir
 
 
-def invoke_process(args, service_dir, dry_run):
+def invoke_process(args, exec_dir=None, dry_run=False):
     if dry_run:
         print_red_bold(u"\t {}".format(str(args)))
         return 0
     else:
         arg_list = {'args': args}
-        if service_dir:
-            arg_list['cwd'] = service_dir
+        if exec_dir:
+            arg_list['cwd'] = exec_dir
         return subprocess.call(**arg_list)

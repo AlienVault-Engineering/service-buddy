@@ -14,5 +14,5 @@ class ParentTestCase(unittest.TestCase):
     def setUpClass(cls):
         super(ParentTestCase, cls).setUpClass()
         cls.service_directory = os.path.join(DIRNAME, '../resources/service_definition_test')
-        cls.service_templates_test = os.path.join(DIRNAME, '../resources/service_templates_test/template-definitions.json')
+        cls.service_templates_test = os.path.join(DIRNAME, '../resources/service_templates_test/')
         log_handler.configure_logging(True)

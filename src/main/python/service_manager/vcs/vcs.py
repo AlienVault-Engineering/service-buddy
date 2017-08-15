@@ -8,7 +8,7 @@ from service_manager.util.services import walk_service_map, safe_mkdir, ensure_s
 class VCS(object):
     def __init__(self, service_directory, dry_run):
         super(VCS, self).__init__()
-        default_path = os.path.join(service_directory, "vcs_config.json")
+        default_path = os.path.join(service_directory, "vcs-config.json")
         if os.path.exists(default_path):
             with open(default_path) as fp:
                 defaults = json.load(fp)
@@ -40,15 +40,15 @@ class VCS(object):
     def init_repo(self, service_definition, service_dir):
         repo_url = self._get_default_vcs_provider().create_repo(service_definition)
         args = ['git', 'init']
-        invoke_process(args, service_dir=service_dir, dry_run=self.dry_run)
+        invoke_process(args, exec_dir=service_dir, dry_run=self.dry_run)
         args = ['git', 'add', '*', '**/*']
-        invoke_process(args, service_dir=service_dir, dry_run=self.dry_run)
+        invoke_process(args, exec_dir=service_dir, dry_run=self.dry_run)
         args = ['git', 'commit', '-m', 'Initial commit']
-        invoke_process(args, service_dir=service_dir, dry_run=self.dry_run)
+        invoke_process(args, exec_dir=service_dir, dry_run=self.dry_run)
         args = ['git', 'remote', 'add', 'origin', repo_url]
-        invoke_process(args, service_dir=service_dir, dry_run=self.dry_run)
+        invoke_process(args, exec_dir=service_dir, dry_run=self.dry_run)
         args = ['git', 'push', '-u', 'origin', 'master']
-        invoke_process(args, service_dir=service_dir, dry_run=self.dry_run)
+        invoke_process(args, exec_dir=service_dir, dry_run=self.dry_run)
 
     def pull_services(self, application_map, destination_directory):
         safe_mkdir(destination_directory)
