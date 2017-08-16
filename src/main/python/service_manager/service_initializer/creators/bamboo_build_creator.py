@@ -1,6 +1,8 @@
 import json
 import os
 
+import logging
+
 from service_manager.util.services import invoke_process
 
 
@@ -13,13 +15,18 @@ class BambooBuildCreator(object):
         with open(bamboo_config) as builtin:
             settings = json.load(builtin)
             self.url = settings['bamboo-url']
+            self.build_templates = settings['build-templates']
 
     def create_project(self, definition):
+        build_template = self.build_templates.get(definition.get_service_type())
+        if not build_template:
+            raise Exception("Build template not found for service type {}".format(definition.get_service_type()))
+
         args = [
             'java',
             '-jar',
             'bamboo-plan-1.0-SNAPSHOT.jar',
-            '--service-type', definition.get_service_type(),
+            '--build-template', build_template,
             '--bamboo-url', self.url,
             '--application', definition.get_app(),
             '--role', definition.get_role()
