@@ -16,6 +16,9 @@ class Initializer(object):
         self.destination_directory = destination_directory
         self.vcs = vcs
 
+    def init_app(self,app):
+        pass
+    
     def init_service(self, definition):
         if definition.repo_exists():
             logging.info("Service exists - {}".format(definition.get_fully_qualified_service_name()))
@@ -28,5 +31,5 @@ class Initializer(object):
         self.build_creator.create_project(definition)
 
     def initialize_services(self, application_map):
-        walk_service_map(application_map=application_map, application_callback=None,
+        walk_service_map(application_map=application_map, application_callback=self.init_app,
                          service_callback=self.init_service)

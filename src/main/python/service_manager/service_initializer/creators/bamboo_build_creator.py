@@ -21,9 +21,6 @@ class BambooBuildCreator(object):
             'bamboo-plan-1.0-SNAPSHOT.jar',
             '--bamboo-url', self.url,
             '--application', definition.get_app(),
-            '--role', definition.get_role(),
-            '--fqpn', definition.get_fully_qualified_service_name(),
-            '--repo-url',definition.get_git_url(),
-            '--contract-tests-repo-url',definition.get_contract_test_git_url()
+            '--role', definition.get_role()
         ]
         invoke_process(args, exec_dir=self.template_dir, dry_run=self.dry_run)
