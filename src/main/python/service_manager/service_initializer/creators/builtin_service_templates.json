@@ -1,6 +1,6 @@
 {
   "pylib": {
     "type": "github",
-    "location": "https://github.com/AlienVault-Engineering/pylib-template"
+    "location": "https://github.com/AlienVault-Engineering/service-template-pylib"
   }
 }
