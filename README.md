@@ -4,9 +4,7 @@
 ## Installation
 
 ```bash
-virtualenv ./venv
-./venv/bin/pip install --upgrade pybuilder==0.11.9
-pyb install
+pip install service-manager
 ```
 
 ## Usage
@@ -28,15 +26,6 @@ optional arguments:
   --application-filter  Constrain processing to passed application root
     APPLICATION_FILTER 
     
-  --vcs-user            Username for VCS
-    VCS_USER   
-    
-  --vcs-password        Password for VCS
-    VCS_PASSWORD 
-    
-  --vcs-root-url        Root url for git repos
-    VCS_ROOT_URL 
-    
   --service-directory   Directory containing service definitions in
     SERVICE_DIRECTORY   <app>/service.json format
     
@@ -49,17 +38,17 @@ optional arguments:
  1. Clone all repositories to local disk (uses git executable)
  
  ```bash
- service-manager pull --service-directory <path to service dir> --vcs-user <user name> --vcs-password <pass> --vcs-root-url <url>
+ service-manager  --service-directory <path to service dir>  pull --destination-directory .
  ``` 
  2. List all services
  
  ```bash
- service-manager list --service-directory <path to service dir> --vcs-user <user name> --vcs-password <pass> --vcs-root-url <url>
+ service-manager  --service-directory <path to service dir> list
  ```
  3. Inspect all services and create any that are not existing in git
  
  ```bash
- service-manager sync --service-directory <path to service dir> --vcs-user <user name> --vcs-password <pass> --vcs-root-url <url>
+ service-manager  --service-directory <path to service dir> sync --destination-directory .  --service-template-definitions
  ```
  
   
