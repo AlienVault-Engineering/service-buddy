@@ -38,7 +38,7 @@ sync_parser.add_argument('--service-template-definitions',
 
 pull_parser = subparsers.add_parser(PULL, help='Pull git repos into local filesystem.')
 pull_parser.set_defaults(command=PULL)
-pull_parser.add_argument('--destination-directory', help='Destination directory to pull code into.', required=True)
+pull_parser.add_argument('--destination-directory', help='Destination directory to pull code into.', default=".")
 
 
 
