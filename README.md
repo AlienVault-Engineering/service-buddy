@@ -10,7 +10,7 @@ pip install service-manager
 ## Usage
 
 ```bash
-Utility to help deploy and manage microservices.
+Utility to help manage microservices.
 
 positional arguments:
   {list,sync,pull}      commands
