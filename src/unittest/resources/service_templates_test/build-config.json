@@ -1,3 +1,14 @@
 {
-  "bamboo-url":"https://localhost:8085"
+  "bamboo-url":"https://localhost:8085",
+  "build-templates": {
+      "pylib-local": {
+        "type": "infrastructure"
+      },
+      "pylib-remote": {
+        "type": "infrastructure"
+      },
+      "contract-tests": {
+        "type": "infrastructure"
+      }
+    }
 }
