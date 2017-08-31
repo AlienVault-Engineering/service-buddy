@@ -26,7 +26,7 @@ class BambooBuildCreator(object):
             'java',
             '-jar',
             'bamboo-plan-1.0-SNAPSHOT.jar',
-            '--build-type', build_template,
+            '--build-template', build_template,
             '--bamboo-url', self.url,
             '--application', definition.get_app(),
             '--role', definition.get_role()
