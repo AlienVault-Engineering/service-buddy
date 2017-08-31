@@ -45,7 +45,7 @@ class Service(dict):
         return "{application}-{role}".format(**self).replace(' ','_')
 
     def force_recreate_build(self):
-        return self[FORCE_RECREATE_BUILD] == True
+        return self.get(FORCE_RECREATE_BUILD,False)
 
     def get_description(self):
         return self[DESCRIPTION]
