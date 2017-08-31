@@ -3,7 +3,7 @@ import logging
 from service_manager.service_initializer.creators.bamboo_build_creator import BambooBuildCreator
 from service_manager.service_initializer.creators.cookie_cutter_creator import CookeCutterProjectCreator
 from service_manager.util import services
-from service_manager.util.services import walk_service_map, ensure_service_directory_exists
+from service_manager.util.services import walk_service_map, ensure_service_directory_exists, Service
 
 
 class Initializer(object):
@@ -20,8 +20,11 @@ class Initializer(object):
         pass
     
     def init_service(self, definition):
+        # type: (Service ) -> None
         if definition.repo_exists():
             logging.info("Service exists - {}".format(definition.get_fully_qualified_service_name()))
+            if definition.force_recreate_build():
+                self.build_creator.create_project(definition)
             return
         logging.info("Creating Service -{}".format(definition.get_fully_qualified_service_name()))
         destination_dir = ensure_service_directory_exists(self.destination_directory, service_defintion=definition)

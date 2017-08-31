@@ -14,6 +14,7 @@ DESCRIPTION = 'description'
 ROLE = 'role'
 APPLICATION = 'application'
 FQN = 'project_name'
+FORCE_RECREATE_BUILD = 'recreate_build'
 SERVICE_TYPE = 'service-type'
 
 
@@ -42,6 +43,9 @@ class Service(dict):
 
     def get_fully_qualified_service_name(self):
         return "{application}-{role}".format(**self).replace(' ','_')
+
+    def force_recreate_build(self):
+        return self[FORCE_RECREATE_BUILD] == True
 
     def get_description(self):
         return self[DESCRIPTION]
