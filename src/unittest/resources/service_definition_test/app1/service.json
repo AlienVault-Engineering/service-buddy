@@ -7,6 +7,12 @@
         "service-type": "pylib-remote",
         "description": "Remoate python library"
     },
+    "rest-api-exists":{
+        "service-type": "pylib-remote",
+        "repository_url": "https://github.com/AlienVault-Engineering/code-template-pylib",
+        "recreate_build":true,
+        "description": "Remote python library"
+    },
     "contract-tests":{
         "service-type": "contract-tests",
         "description": "Contract test for app1"

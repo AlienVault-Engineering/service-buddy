@@ -1,8 +1,13 @@
 import json
 import os
 
+import logging
+
 from Bitbucket import BitbucketVCSProvider
-from service_manager.util.services import walk_service_map, safe_mkdir, ensure_service_directory_exists, invoke_process
+from service_buddy.service.loader import walk_service_map, safe_mkdir, ensure_app_directory_exists, \
+    ensure_service_directory_exists
+from service_buddy.service.service import Service
+from service_buddy.util.command_util import invoke_process
 
 
 class VCS(object):
@@ -12,12 +17,12 @@ class VCS(object):
         if os.path.exists(default_path):
             with open(default_path) as fp:
                 defaults = json.load(fp)
-                self.default_provider = defaults.get('provider',None)
-                self.repo_root = defaults.get('root-user',None)
-                self.user = defaults.get('user',os.environ.get('VCS_USER'))
-                self.password = defaults.get('password',os.environ.get('VCS_PASSWORD'))
+                self.default_provider = defaults.get('provider', None)
+                self.repo_root = defaults.get('root-user', os.environ.get('VCS_ROOT_USER'))
+                self.user = defaults.get('user', os.environ.get('VCS_USER'))
+                self.password = defaults.get('password', os.environ.get('VCS_PASSWORD'))
         else:
-            raise Exception("Could not local 'vcs_config.json' in service directory")
+            raise Exception("Could not local 'vcs-config.json' in service directory")
         self.dry_run = dry_run
         self.vcs_providers = {
             BitbucketVCSProvider.get_type(): BitbucketVCSProvider(self.user, self.password, self.repo_root, dry_run)}
@@ -29,13 +34,15 @@ class VCS(object):
 
     def validate_repositories(self, application_map):
         def populate_repo_metadata(service_definition):
-            self._get_default_vcs_provider().find_repo(service_definition)
+            repo_url = self._get_default_vcs_provider().find_repo(service_definition)
+            service_definition.set_git_url(repo_url)
 
         walk_service_map(application_map=application_map, application_callback=None,
                          service_callback=populate_repo_metadata)
 
     def create_project(self, service_definition, app_dir):
-        return self.init_repo(service_definition=service_definition,service_dir=service_definition.get_service_directory(app_dir))
+        return self.init_repo(service_definition=service_definition,
+                              service_dir=service_definition.get_service_directory(app_dir))
 
     def init_repo(self, service_definition, service_dir):
         repo_url = self._get_default_vcs_provider().create_repo(service_definition)
@@ -51,11 +58,12 @@ class VCS(object):
         invoke_process(args, exec_dir=service_dir, dry_run=self.dry_run)
         service_definition.set_git_url(repo_url)
 
-    def pull_services(self, application_map, destination_directory):
+    def clone_service(self, application_map, destination_directory):
+        # type: (dict, str) -> None
         safe_mkdir(destination_directory)
 
         def clone_repository(service_defintion):
-            destination_dir = ensure_service_directory_exists(destination_directory, service_defintion)
+            destination_dir = ensure_app_directory_exists(destination_directory, service_defintion)
             if service_defintion.repo_exists():
                 clone_url = service_defintion.get_git_url()
                 args = ['git', 'clone', clone_url]
@@ -63,3 +71,22 @@ class VCS(object):
 
         walk_service_map(application_map=application_map, application_callback=None,
                          service_callback=clone_repository)
+
+    def git_exec(self, application_map, destination_directory, args):
+        # type: (dict,str, list) -> None
+
+        def git_exec(service_defintion):
+            # type: (Service) -> None
+            destination_dir = ensure_service_directory_exists(destination_directory=destination_directory,
+                                                              service_defintion=service_defintion,
+                                                              create=False)
+            if not destination_directory:
+                logging.warn("Service '{}' did not exist in destination directory - {}".format(service_defintion.get_fully_qualified_service_name(),destination_directory))
+                logging.warn("Skipping running git command - git {}".format(str(args)))
+                return
+            git_args = ['git']
+            git_args.extend(args)
+            invoke_process(git_args, destination_dir, self.dry_run)
+
+        walk_service_map(application_map=application_map, application_callback=None,
+                         service_callback=git_exec)

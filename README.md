@@ -1,10 +1,10 @@
-# service-manager
+# service-buddy
 
 [Build Status](https://api.travis-ci.org/AlienVault-Engineering/service-manager.png) 
 ## Installation
 
 ```bash
-pip install service-manager
+pip install service-buddy
 ```
 
 ## Usage
@@ -38,17 +38,25 @@ optional arguments:
  1. Clone all repositories to local disk (uses git executable)
  
  ```bash
- service-manager  --service-directory <path to service dir>  pull --destination-directory .
- ``` 
- 2. List all services
- 
- ```bash
- service-manager  --service-directory <path to service dir> list
+ service-buddy  --service-directory <path to service dir>  clone --destination-directory .
  ```
- 3. Inspect all services and create any that are not existing in git
+ 
+ 
+ 2. Pull the latest for all repositories existing on local disk (uses git executable and requires 'clone' to be run first)
  
  ```bash
- service-manager  --service-directory <path to service dir> sync --destination-directory .  --service-template-definitions
+ service-buddy  --service-directory <path to service dir>  git --destination-directory <path to existing repo structure> commit -m "Big old Commit"
+ ``` 
+ 
+ 3. List all services
+ 
+ ```bash
+ service-buddy  --service-directory <path to service dir> list
+ ```
+ 4. Inspect all services and create any that are not existing in git
+ 
+ ```bash
+ service-buddy  --service-directory <path to service dir> init --destination-directory .  --service-template-definitions
  ```
  
   

@@ -1,7 +1,7 @@
 import json
 import os
 
-from service_manager.util.services import invoke_process
+from service_buddy.util.command_util import invoke_process
 
 
 class BambooBuildCreator(object):

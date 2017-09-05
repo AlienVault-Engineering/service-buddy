@@ -22,15 +22,15 @@ def initialize(project):
         project.version = "0.0.999"
     #Project Manifest
     project.summary = "CLI for managing micro-services"
-    project.home_page = "https://github.com/AlienVault-Engineering/service-manager"
+    project.home_page = "https://github.com/AlienVault-Engineering/service-buddy"
     project.description = "CLI for managing micro-services"
     project.author = "AlienVault"
     project.license = "Apache 2.0"
-    project.url = "https://github.com/AlienVault-Engineering/service-manager"
+    project.url = "https://github.com/AlienVault-Engineering/service-buddy"
     project.depends_on_requirements("requirements.txt")
     #Build and test settings
-    project.set_property("run_unit_tests_propagate_stdout",True)
-    project.set_property("run_unit_tests_propagate_stderr",True)
-    project.set_property("coverage_branch_threshold_warn", 30)
-    project.include_file('service_manager',"service_initializer/creators/builtin_service_templates.json")
+    # project.set_property("run_unit_tests_propagate_stdout",True)
+    # project.set_property("run_unit_tests_propagate_stderr",True)
+    project.set_property("coverage_branch_threshold_warn", 49)
+    project.include_file('service_buddy',"code/builtin_service_templates.json")
     project.set_property("distutils_upload_repository","pypi")

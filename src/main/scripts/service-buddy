@@ -4,8 +4,8 @@
 import re
 import sys
 
-from service_manager import commandline
+from service_buddy import commandline
 
 if __name__ == '__main__':
     sys.argv[0] = re.sub(r'(-script\.pyw?|\.exe)?$', '', sys.argv[0])
-    sys.exit(commandline.execute_main())
+    sys.exit(commandline.cli())
