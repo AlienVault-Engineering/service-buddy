@@ -10,27 +10,30 @@ pip install service-buddy
 ## Usage
 
 ```bash
-Utility to help manage microservices.
+Usage: service-buddy [OPTIONS] COMMAND [ARGS]...
 
-positional arguments:
-  {list,sync,pull}      commands
-    list                List known services
-    sync                Sync service definitions and initialize new entries.
-    pull                Pull git repos into local filesystem.
+  CLI for managing the repositories and build pipeline in a micro-service
+  architecture..
 
-optional arguments:
-  -h, --help            show this help message and exit
-  
-  --verbose             Level of logging to output
-  
-  --application-filter  Constrain processing to passed application root
-    APPLICATION_FILTER 
-    
-  --service-directory   Directory containing service definitions in
-    SERVICE_DIRECTORY   <app>/service.json format
-    
-  --dry-run             Preview effect of action
-  
+Options:
+  --application-filter TEXT     Constrain command to operate on applications
+                                that match the passed filter
+  --service-directory PATH      Directory containing service definitions in
+                                <app>/service.json format.  Default is
+                                './services'
+  --destination-directory PATH  The directory where the repositories for each
+                                service should be created or currently exist.
+                                Default is './code'
+  --verbose                     Print verbose status messages
+  --dry-run                     Preview effect of action
+  --help                        Show this message and exit.
+
+Commands:
+  clone  Clone all of the existing service definition repos onto the local
+         file system
+  git    Run arbitrary git command for each service
+  init   Analyze service definitions and initialize any new services.
+  list   Print definitions for services.
 ```
 
  ### Examples

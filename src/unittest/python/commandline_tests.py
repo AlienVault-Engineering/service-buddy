@@ -41,9 +41,10 @@ class CommandlineTestCase(ParentTestCase):
         result = runner.invoke(cli, ['--service-directory',
                                      self.service_directory,
                                      '--dry-run',
-                                     'clone',
                                      '--destination-directory',
-                                     self.temp_dir])
+                                     self.temp_dir,
+                                     'clone'
+                                     ])
         self.assertEqual(result.exit_code, 0, "Failed to run list successfully")
 
     def test_git(self):
@@ -51,9 +52,9 @@ class CommandlineTestCase(ParentTestCase):
         result = runner.invoke(cli, ['--service-directory',
                                      self.service_directory,
                                      '--dry-run',
-                                     'git',
                                      '--destination-directory',
                                      self.temp_dir,
+                                     'git',
                                      "foo"])
         self.assertEqual(result.exit_code, 0, "Failed to run list successfully")
 
@@ -63,9 +64,9 @@ class CommandlineTestCase(ParentTestCase):
                                     '--service-directory',
                                      self.service_directory,
                                      '--dry-run',
+                                    '--destination-directory',
+                                    self.temp_dir,
                                      'init',
-                                     '--destination-directory',
-                                     self.temp_dir,
                                      '--service-template-definitions',
                                      self.service_templates_test
                                      ]

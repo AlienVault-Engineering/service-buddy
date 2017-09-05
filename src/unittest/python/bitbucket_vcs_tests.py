@@ -36,15 +36,12 @@ class BitbucketVCSInitTest(ParentTestCase):
         repo = self.vcs.create_repo(service_definition)
         self.assertIsNotNone(repo,"Failed to create repo")
 
-    def validate_not_exists(self,service_definition):
-        repo = self.vcs.find_repo(service_definition)
-        self.assertIsNone(repo,"Failed to create repo")
-
     def test_repo_exists(self):
         application_map = loader.load_service_definitions(self.service_directory)
         loader.walk_service_map(application_map, application_callback=None, service_callback=self.validate_exists)
         self.vcs.client = None
-        loader.walk_service_map(application_map, application_callback=None, service_callback=self.validate_not_exists)
+        self.vcs.dry_run = True
+        loader.walk_service_map(application_map, application_callback=None, service_callback=self.validate_exists)
         self.vcs.client = "TestClient"
 
     def test_repo_create(self):
