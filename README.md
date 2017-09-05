@@ -13,7 +13,7 @@ pip install service-buddy
 Usage: service-buddy [OPTIONS] COMMAND [ARGS]...
 
   CLI for managing the repositories and build pipeline in a micro-service
-  architecture..
+  architecture.
 
 Options:
   --application-filter TEXT     Constrain command to operate on applications
@@ -29,37 +29,43 @@ Options:
   --help                        Show this message and exit.
 
 Commands:
-  clone  Clone all of the existing service definition repos onto the local
-         file system
-  git    Run arbitrary git command for each service
-  init   Analyze service definitions and initialize any new services.
-  list   Print definitions for services.
+  clone     Clone all of the existing service definition repos onto the local
+            file system
+  git       Run arbitrary git command for each service
+  init      Analyze service definitions and initialize any new services.
+  list      Print definitions for services.
+  boostrap  Create a repository containing the initial definition for a micro-service stack managed by service-buddy.
 ```
 
  ### Examples
  
- 1. Clone all repositories to local disk (uses git executable)
+ 1. Bootstrap your service definitions, creating an initial repository for use with service-buddy
+ ```bash
+ service-buddy bootstrap
+ ```
+ 
+ 2. Clone all repositories to local disk (uses git executable).  Assumes your working directory is the directory created by the service-buddy bootstrap command
  
  ```bash
- service-buddy  --service-directory <path to service dir>  clone --destination-directory .
+ service-buddy clone 
  ```
  
  
- 2. Pull the latest for all repositories existing on local disk (uses git executable and requires 'clone' to be run first)
+ 3. Pull the latest for all repositories existing on local disk (uses git executable and requires 'clone' to be run first)
  
  ```bash
- service-buddy  --service-directory <path to service dir>  git --destination-directory <path to existing repo structure> commit -m "Big old Commit"
+ service-buddy  git commit -m "Big old Commit"
  ``` 
  
- 3. List all services
+ 4. List all services
  
  ```bash
- service-buddy  --service-directory <path to service dir> list
+ service-buddy  list
  ```
- 4. Inspect all services and create any that are not existing in git
+ 5. Inspect all services and create any that are not existing in git
  
  ```bash
- service-buddy  --service-directory <path to service dir> init --destination-directory .  --service-template-definitions
+ service-buddy  init 
  ```
  
   

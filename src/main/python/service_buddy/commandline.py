@@ -7,7 +7,7 @@ from service_buddy.util.log_handler import configure_logging
 @click.group()
 @click.option("--application-filter", envvar='FILTER', help='Constrain command to operate on applications'
                                                             ' that match the passed filter')
-@click.option("--service-directory", envvar='SERVICE_DIRECTORY', type=click.Path(exists=True),
+@click.option("--service-directory", envvar='SERVICE_DIRECTORY', type=click.Path(),
               default="./services",
               help='Directory containing service definitions in <app>/service.json format.  Default is \'./services\'')
 @click.option('--destination-directory',
@@ -35,3 +35,5 @@ from service_buddy.commands.git import command
 from service_buddy.commands.initialize import command
 # noinspection PyUnresolvedReferences
 from service_buddy.commands.list import command
+# noinspection PyUnresolvedReferences
+from service_buddy.commands.bootstrap import command

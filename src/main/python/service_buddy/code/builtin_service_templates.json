@@ -2,5 +2,9 @@
   "pylib": {
     "type": "github",
     "location": "https://github.com/AlienVault-Engineering/code-template-pylib"
+  },
+  "service-buddy-master": {
+    "type": "github",
+    "location": "https://github.com/AlienVault-Engineering/code-template-service-buddy-master"
   }
 }

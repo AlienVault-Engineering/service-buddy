@@ -56,3 +56,6 @@ class Service(dict):
 
     def get_service_directory(self,app_dir):
         return os.path.join(app_dir,self.get_fully_qualified_service_name())
+
+    def set_service_type(self, param):
+        self[SERVICE_TYPE] = param

@@ -1,4 +1,5 @@
 {
+  "provider":"bamboo",
   "bamboo-url":"https://localhost:8085",
   "build-templates": {
       "pylib-local": {

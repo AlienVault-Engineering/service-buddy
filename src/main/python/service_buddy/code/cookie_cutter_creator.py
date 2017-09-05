@@ -13,22 +13,14 @@ def _make_cookie_safe(service_definition):
 
 
 class CookeCutterProjectCreator(object):
-    def __init__(self, template_dir,dry_run):
+    def __init__(self, template_dir,dry_run,templates):
         super(CookeCutterProjectCreator, self).__init__()
+        self.template_dir = template_dir
+        self.templates = templates
         self.dry_run = dry_run
-        self.service_def = {}
-        self._load_service_templates(
-            os.path.join(os.path.dirname(os.path.abspath(__file__)), 'builtin_service_templates.json'))
-        if template_dir:
-            self.template_dir = template_dir
-            self._load_service_templates(os.path.join(template_dir,'template-definitions.json'))
-
-    def _load_service_templates(self, builtIn):
-        with open(builtIn) as builtin:
-            self.service_def.update(json.load(builtin))
 
     def create_project(self, service_definition, service_dir):
-        template = self.lookup_service_template(service_definition.get_service_type())
+        template = self._lookup_service_template(service_definition.get_service_type())
         if template['type'] == 'file':
             location = os.path.abspath(os.path.join(self.template_dir,template['location']))
         else:
@@ -42,7 +34,11 @@ class CookeCutterProjectCreator(object):
                                 extra_context=extra_context,
                                 output_dir=service_dir)
 
-    def lookup_service_template(self, service_type):
-        if service_type not in self.service_def:
-            raise Exception("Unknown service type - {}".format(service_type))
-        return self.service_def[service_type]
+    def _lookup_service_template(self, service_type):
+        if service_type not in self.templates:
+            raise Exception("Unknown code template - {}".format(service_type))
+        return self.templates[service_type]
+
+    @classmethod
+    def get_type(cls):
+        return "cookiecutter"

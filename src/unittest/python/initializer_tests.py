@@ -32,6 +32,6 @@ class InitTestCase(ParentTestCase):
     def test_project_init(self):
         application_map = loader.load_service_definitions(self.service_directory)
         init = Initializer(self.vcs, self.temp_dir, True, self.service_templates_test)
-        init.code_generator.dry_run = False
+        init.code_generator.get_default_code_creator().dry_run = False
         init.initialize_services(application_map)
         loader.walk_service_map(application_map, application_callback=None, service_callback=self.validate_generation)
