@@ -3,15 +3,23 @@
   "code-template-definitions":{
     "pylib-local":{
       "type":"file",
-      "location":"./pylib"
+      "location":"./pylib",
+      "generate-service-definition":false
     },
     "contract-tests":{
-      "type":"file",
-      "location":"./pylib"
+      "type":"alias",
+      "lookup":"pylib-local"
+    },
+    "cluster":{
+      "type":"alias",
+      "lookup":"pylib-local",
+      "generate-service-definition":true
     },
     "pylib-remote":{
       "type":"github",
-      "location":"https://github.com/AlienVault-Engineering/pylib-template"
+      "location":"https://github.com/AlienVault-Engineering/pylib-template",
+      "generate-service-definition":false
+
     }
   }
 }

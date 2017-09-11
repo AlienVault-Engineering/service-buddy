@@ -15,4 +15,4 @@ def bootstrap(service_ctx,application):
     cc = CodeCreator("", service_ctx.dry_run)
     service_def = Service(app=application,role="master",definition={})
     service_def.set_service_type("service-buddy-master")
-    cc.create_project(service_definition=service_def,service_dir=service_ctx.destination_directory)
+    cc.create_project(service_definition=service_def, app_dir=service_ctx.destination_directory)
