@@ -8,6 +8,7 @@ from service_buddy.service.loader import walk_service_map, safe_mkdir, ensure_ap
     ensure_service_directory_exists
 from service_buddy.service.service import Service
 from service_buddy.util.command_util import invoke_process
+from service_buddy.vcs.github_vcs import GitHubVCSProvider
 
 
 class VCS(object):
@@ -25,7 +26,8 @@ class VCS(object):
             raise Exception("Could not local 'vcs-config.json' in service directory")
         self.dry_run = dry_run
         self.vcs_providers = {
-            BitbucketVCSProvider.get_type(): BitbucketVCSProvider(self.user, self.password, self.repo_root, dry_run)}
+            BitbucketVCSProvider.get_type(): BitbucketVCSProvider(self.user, self.password, self.repo_root, dry_run),
+            GitHubVCSProvider.get_type(): GitHubVCSProvider(self.user, self.password, self.repo_root, dry_run)}
         if self.default_provider not in self.vcs_providers:
             raise Exception("Requested provider is not configured {}".format(self.default_provider))
 
