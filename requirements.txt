@@ -2,3 +2,4 @@ PyGithub
 cookiecutter
 pybitbucket
 click
+infra_buddy
