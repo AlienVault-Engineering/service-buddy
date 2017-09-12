@@ -36,7 +36,7 @@ class CommandlineTestCase(ParentTestCase):
     def test_boostrap(self):
         runner = CliRunner()
         result = runner.invoke(cli, ['--destination-directory',
-                                     self.temp_dir, 'bootstrap', '--application', 'app',
+                                     self.temp_dir,'bootstrap',  '--application', 'app',
                                      '--skip-infrastructure-bootstrap'])
         root_dir = os.path.join(self.temp_dir, "app-master")
         self.assertTrue(os.path.exists(root_dir), "Failed to create dir")

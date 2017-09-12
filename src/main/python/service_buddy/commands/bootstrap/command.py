@@ -19,15 +19,15 @@ from infra_buddy.commands.bootstrap import command as bootstrap
 @click.option("--skip-infrastructure-bootstrap", is_flag=True, envvar="SKIP_ENV",help="Skip the bootstrap of the infrastructure for "
                                                                         "this application.")
 @click.pass_obj
-def bootstrap(service_ctx,application,skip_infrastructure_bootstrap,region):
-    # type: (ServiceContext, str,bool) -> None
+def bootstrap(service_ctx,application,skip_infrastructure_bootstrap,deploy_region=None):
+    # type: (ServiceContext, str,bool,str) -> None
     cc = CodeCreator("", service_ctx.dry_run)
     service_def = Service(app=application,role="master",definition={})
     service_def.set_service_type("service-buddy-master")
     cc.create_project(service_definition=service_def, app_dir=service_ctx.destination_directory)
     if not skip_infrastructure_bootstrap:
-        if region:
-            os.environ.setdefault('REGION',region)
+        if deploy_region:
+            os.environ.setdefault('REGION',deploy_region)
         deploy_context = DeployContext.create_deploy_context(
                     application=application,
                     role="none",
