@@ -33,4 +33,4 @@ def bootstrap(service_ctx,application,skip_infrastructure_bootstrap,region):
                     role="none",
                     environment='dev'
                 )
-        bootstrap.do_command(deploy_context,application,['ci','prod'])
+        bootstrap.do_command(deploy_context,['ci','prod'])
