@@ -35,14 +35,15 @@ class CommandlineTestCase(ParentTestCase):
 
     def test_boostrap(self):
         runner = CliRunner()
-        result = runner.invoke(cli, [  '--destination-directory',
-                                             self.temp_dir, 'bootstrap','--application','app'])
+        result = runner.invoke(cli, ['--destination-directory',
+                                     self.temp_dir, 'bootstrap', '--application', 'app',
+                                     '--skip-infrastructure-bootstrap'])
         root_dir = os.path.join(self.temp_dir, "app-master")
         self.assertTrue(os.path.exists(root_dir), "Failed to create dir")
         self.assertTrue(os.path.exists(os.path.join(root_dir, "code-templates")), "Failed to create code-templates")
         service_dir = os.path.join(root_dir, "services")
         self.assertTrue(os.path.exists(service_dir), "Failed to create services")
-        self.assertTrue(os.path.exists(os.path.join(service_dir,'app')), "Failed to create app directory")
+        self.assertTrue(os.path.exists(os.path.join(service_dir, 'app')), "Failed to create app directory")
 
     def test_list(self):
         runner = CliRunner()
@@ -74,14 +75,14 @@ class CommandlineTestCase(ParentTestCase):
     def test_init(self):
         runner = CliRunner()
         result = runner.invoke(cli, [
-                                    '--service-directory',
-                                     self.service_directory,
-                                     '--dry-run',
-                                    '--destination-directory',
-                                    self.temp_dir,
-                                     'init',
-                                     '--code-template-definitions',
-                                     self.service_templates_test
-                                     ]
+            '--service-directory',
+            self.service_directory,
+            '--dry-run',
+            '--destination-directory',
+            self.temp_dir,
+            'init',
+            '--code-template-definitions',
+            self.service_templates_test
+        ]
                                )
         self.assertEqual(result.exit_code, 0, "Failed to run list successfully - {}".format(result.output))
