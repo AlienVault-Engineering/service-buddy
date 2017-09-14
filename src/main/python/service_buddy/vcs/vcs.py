@@ -65,11 +65,16 @@ class VCS(object):
         safe_mkdir(destination_directory)
 
         def clone_repository(service_defintion):
-            destination_dir = ensure_app_directory_exists(destination_directory, service_defintion)
+            # type: (Service) -> None
+            app_dir = ensure_app_directory_exists(destination_directory, service_defintion)
             if service_defintion.repo_exists():
                 clone_url = service_defintion.get_git_url()
                 args = ['git', 'clone', clone_url]
-                invoke_process(args, destination_dir, self.dry_run)
+                service_directory = service_defintion.get_service_directory(app_dir=app_dir)
+                if os.path.exists(service_directory):
+                    logging.warn("Skipping clone step directory exists - {}".format(service_directory))
+                else:
+                    invoke_process(args, app_dir, self.dry_run)
 
         walk_service_map(application_map=application_map, application_callback=None,
                          service_callback=clone_repository)

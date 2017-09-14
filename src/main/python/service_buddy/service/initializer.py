@@ -9,11 +9,13 @@ from service_buddy.service.service_template_generator import ServiceTemplateGene
 from service_buddy.util.pretty_printer import pretty_print_service
 
 
-
-
 class Initializer(object):
-    def __init__(self, vcs, destination_directory, dry_run,service_template_definitions):
+    def __init__(self, vcs, destination_directory, dry_run, service_template_definitions,
+                 skip_build_creation=False,
+                 skip_git_creation=False):
         super(Initializer, self).__init__()
+        self.skip_build_creation = skip_build_creation
+        self.skip_git_creation = skip_git_creation
         self.code_generator = CodeCreator(service_template_definitions, dry_run)
         self.build_creator = BuildCreator(service_template_definitions, dry_run)
         self.dry_run = dry_run
@@ -21,9 +23,9 @@ class Initializer(object):
         self.destination_directory = destination_directory
         self.vcs = vcs
 
-    def init_app(self,app):
+    def init_app(self, app):
         pass
-    
+
     def init_service(self, definition):
         # type: (Service ) -> None
         if definition.repo_exists():
@@ -35,8 +37,8 @@ class Initializer(object):
         app_dir = ensure_app_directory_exists(self.destination_directory, service_defintion=definition)
         pretty_print_service(definition)
         self.code_generator.create_project(definition, app_dir)
-        self.vcs.create_project(definition,app_dir)
-        self.build_creator.create_project(definition)
+        if not self.skip_git_creation: self.vcs.create_project(definition, app_dir)
+        if not self.skip_build_creation: self.build_creator.create_project(definition)
 
     def initialize_services(self, application_map):
         walk_service_map(application_map=application_map, application_callback=self.init_app,
