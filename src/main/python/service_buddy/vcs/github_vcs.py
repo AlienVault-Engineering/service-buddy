@@ -9,7 +9,7 @@ from service_buddy.util.command_util import invoke_process
 class GitHubVCSProvider(object):
     @classmethod
     def get_type(cls):
-        return 'bitbucket'
+        return 'github'
     
     def __init__(self, user, password,repo_root,dry_run):
         super(GitHubVCSProvider, self).__init__()
