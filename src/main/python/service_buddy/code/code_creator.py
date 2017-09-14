@@ -24,7 +24,7 @@ class CodeCreator(object):
             self.default_provider = "cookiecutter"
             self.extended_templates = {}
         built_in = self._load_service_templates(
-            os.path.join(os.path.dirname(os.path.abspath(__file__)), 'builtin_service_templates.json'))
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), 'builtin-code-templates.json'))
         built_in.update(self.extended_templates)
         self.templates = self._resolve_alias(built_in)
         self.service_template_generator = ServiceTemplateGenerator()

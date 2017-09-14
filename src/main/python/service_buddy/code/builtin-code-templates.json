@@ -1,0 +1,13 @@
+{
+  "pylib": {
+    "type": "github",
+    "location": "https://github.com/AlienVault-Engineering/code-template-pylib",
+    "generate-service-definition":false
+
+  },
+  "service-buddy-master": {
+    "type": "github",
+    "location": "https://github.com/AlienVault-Engineering/code-template-service-buddy-master",
+    "generate-service-definition":false
+  }
+}
