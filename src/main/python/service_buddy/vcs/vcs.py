@@ -25,11 +25,15 @@ class VCS(object):
         else:
             raise Exception("Could not local 'vcs-config.json' in service directory")
         self.dry_run = dry_run
+
         self.vcs_providers = {
-            BitbucketVCSProvider.get_type(): BitbucketVCSProvider(self.user, self.password, self.repo_root, dry_run),
-            GitHubVCSProvider.get_type(): GitHubVCSProvider(self.user, self.password, self.repo_root, dry_run)}
+            BitbucketVCSProvider.get_type(): BitbucketVCSProvider(),
+            GitHubVCSProvider.get_type(): GitHubVCSProvider()}
+
         if self.default_provider not in self.vcs_providers:
             raise Exception("Requested provider is not configured {}".format(self.default_provider))
+        else:
+            self._get_default_vcs_provider().init(self.user, self.password, self.repo_root, dry_run)
 
     def _get_default_vcs_provider(self):
         return self.vcs_providers[self.default_provider]

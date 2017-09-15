@@ -24,7 +24,8 @@ class BitbucketVCSInitTest(ParentTestCase):
     @classmethod
     def setUpClass(cls):
         super(BitbucketVCSInitTest, cls).setUpClass()
-        cls.vcs = BitbucketVCSProvider(None, None, "test", False)
+        cls.vcs = BitbucketVCSProvider()
+        cls.vcs.init(None, None, "test", False)
         cls.vcs.bitbucket_repo = TestBitbucketClient()
         cls.vcs.client = "TestClient"
 

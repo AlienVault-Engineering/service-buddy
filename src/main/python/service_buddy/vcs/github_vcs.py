@@ -10,15 +10,22 @@ class GitHubVCSProvider(object):
     @classmethod
     def get_type(cls):
         return 'github'
-    
-    def __init__(self, user, password,repo_root,dry_run):
+
+    def __init__(self, ):
         super(GitHubVCSProvider, self).__init__()
+        self.repo_root = ""
+        self.dry_run = ""
+        self.client = None
+
+    def init(self, user, password, repo_root, dry_run):
         self.repo_root = repo_root
         self.dry_run = dry_run
         if user and password:
-            self.client  = Github(user, password).get_organization(self.repo_root)
+            self.client = Github(user, password).get_organization(self.repo_root)
         else:
-            logging.warn("VCS username and password not configured - assuming git executable has appropriate authorization for repo checks")
+            logging.warn(
+                "VCS username and password not configured - assuming git executable has appropriate authorization for "
+                "repo checks")
             self.client = None
 
     def find_repo(self, service_definition):
@@ -32,9 +39,11 @@ class GitHubVCSProvider(object):
                         break
             else:
                 ssh_url = 'ssh://git@github.com/{}'.format(fq_repository_name)
-                result = invoke_process(args=['git', 'ls-remote', ssh_url, '>','/dev/null'], exec_dir=None, dry_run=self.dry_run)
+                result = invoke_process(args=['git', 'ls-remote', ssh_url, '>', '/dev/null'], exec_dir=None,
+                                        dry_run=self.dry_run)
                 if result != 0:
-                    logging.info("Could not find repository with git executable - {}".format(service_definition.get_repository_name()))
+                    logging.info("Could not find repository with git executable - {}".format(
+                        service_definition.get_repository_name()))
                     ssh_url = None
             return ssh_url
         except HTTPError:
@@ -49,12 +58,12 @@ class GitHubVCSProvider(object):
         # team_id=github.GithubObject.NotSet,
         # gitignore_template=github.GithubObject.NotSet
         payload = {
-          "name": service_defintion.get_fully_qualified_service_name(),
-          "description": service_defintion.get_description(),
-          "private": True,
-          "has_issues": False,
-          "has_projects": False,
-          "has_wiki": False
+            "name": service_defintion.get_fully_qualified_service_name(),
+            "description": service_defintion.get_description(),
+            "private": True,
+            "has_issues": False,
+            "has_projects": False,
+            "has_wiki": False
         }
         if self.dry_run:
             logging.error("Creating repo {}".format(str(payload)))

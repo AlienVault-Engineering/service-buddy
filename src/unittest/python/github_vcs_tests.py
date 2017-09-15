@@ -32,7 +32,8 @@ class GitHubVCSInitTest(ParentTestCase):
     @classmethod
     def setUpClass(cls):
         super(GitHubVCSInitTest, cls).setUpClass()
-        cls.vcs = GitHubVCSProvider(None, None, "test", False)
+        cls.vcs = GitHubVCSProvider()
+        cls.vcs.init(None, None, "test", False)
 
     def validate_exists(self,service_definition):
         repo = self.vcs.find_repo(service_definition)

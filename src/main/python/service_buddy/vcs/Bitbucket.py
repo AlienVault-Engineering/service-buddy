@@ -14,8 +14,13 @@ class BitbucketVCSProvider(object):
     def get_type(cls):
         return 'bitbucket'
     
-    def __init__(self, user, password, repo_root,dry_run):
+    def __init__(self):
         super(BitbucketVCSProvider, self).__init__()
+        self.repo_root = ""
+        self.dry_run = ""
+        self.client = None
+
+    def init(self, user, password, repo_root,dry_run):
         self.dry_run = dry_run
         if user and password:
             self.client = Client(
@@ -24,7 +29,8 @@ class BitbucketVCSProvider(object):
                     password,
                     'pybitbucket@mailinator.com'))
         else:
-            logging.warn("VCS username and password not configured - assuming git executable has appropriate authorization for repo checks")
+            logging.warn("VCS username and password not configured - assuming git executable has appropriate "
+                         "authorization for repo checks")
             self.client = None
         self.team_root_user = repo_root
         self.bitbucket_repo = repository.Repository
