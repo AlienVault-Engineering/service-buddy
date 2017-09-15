@@ -69,7 +69,7 @@ class VCS(object):
             app_dir = ensure_app_directory_exists(destination_directory, service_defintion)
             if service_defintion.repo_exists():
                 clone_url = service_defintion.get_git_url()
-                args = ['git', 'clone', clone_url]
+                args = ['git', 'clone', clone_url,service_defintion.get_fully_qualified_service_name()]
                 service_directory = service_defintion.get_service_directory(app_dir=app_dir)
                 if os.path.exists(service_directory):
                     logging.warn("Skipping clone step directory exists - {}".format(service_directory))
