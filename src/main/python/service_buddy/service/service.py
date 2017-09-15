@@ -34,7 +34,7 @@ class Service(dict):
         return self[SERVICE_TYPE]
 
     def repo_exists(self):
-        return REPOSITORY_URL in self
+        return self.get(REPOSITORY_URL,None) is not None
 
     def get_role(self):
         return self[ROLE]
