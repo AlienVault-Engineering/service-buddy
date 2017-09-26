@@ -20,7 +20,7 @@ class CodeCreator(object):
                 self.default_provider = defaults.get('provider', None)
                 self.extended_templates = defaults.get('code-template-definitions', {})
         else:
-            logging.warn("Could not local 'code-template-config.json' in code template directory")
+            logging.info("Could not locate 'code-template-config.json' in code template directory")
             self.default_provider = "cookiecutter"
             self.extended_templates = {}
         built_in = self._load_service_templates(
@@ -34,6 +34,7 @@ class CodeCreator(object):
                                                                             templates=self.templates)}
         if self.default_provider not in self.code_creators:
             raise Exception("Requested provider is not configured {}".format(self.default_provider))
+
     def _resolve_alias(self, templates):
         ret = {}
         for key, value in templates.iteritems():

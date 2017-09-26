@@ -25,7 +25,10 @@ def bootstrap(service_ctx, application, skip_infrastructure_bootstrap, deploy_re
     cc = CodeCreator("", service_ctx.dry_run)
     service_def = Service(app=application, role="master", definition={})
     service_def.set_service_type("service-buddy-master")
-    cc.create_project(service_definition=service_def, app_dir=service_ctx.destination_directory)
+    directory = service_ctx.destination_directory
+    if directory == "./code": #override default for this usecase
+        directory = "./"
+    cc.create_project(service_definition=service_def, app_dir=directory)
     if deploy_region:
         os.environ.setdefault('REGION', deploy_region)
     if not skip_infrastructure_bootstrap:
