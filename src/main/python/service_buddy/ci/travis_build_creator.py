@@ -76,7 +76,7 @@ class TravisBuildCreator(object):
             ])
 
     def _invoke_travis(self, args,exec_dir=None):
-        base_args = ['travis', '--skip-completion-check ', '--org' if self.use_org else '--pro', args]
+        base_args = ['travis', '--skip-completion-check ','--no-interactive', '--org' if self.use_org else '--pro', args]
         if exec_dir:
             return invoke_process(base_args,exec_dir=exec_dir,dry_run=self.dry_run)
         else:
