@@ -1,11 +1,14 @@
 {
-  "provider":"travis",
-  "use-travis-open-source":true,
+  "provider": "travis",
+  "use-travis-open-source": true,
   "build-templates": {
     "test": {
-      "language":"python",
-      "install":"foo",
-      "script":"bar"
+      "type": "example"
     }
+  },
+  "build-configuration": {
+    "language": "python",
+    "install": "foo",
+    "script": "bar"
   }
 }

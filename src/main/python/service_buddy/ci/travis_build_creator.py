@@ -10,6 +10,7 @@ class TravisBuildCreator(object):
     def init(self, dry_run, default_config, build_templates):
         self.dry_run = dry_run
         self.build_templates = build_templates
+        self.build_configuration = default_config.get('build-configuration',{})
         self.use_org = default_config.get("use-travis-open-source", True)
         self.gh_token = default_config.get('github-token', os.environ.get('GITHUB_TOKEN'))
         self.pypi_user = default_config.get('pypi-user', os.environ.get('PYPI_USER'))
@@ -25,12 +26,16 @@ class TravisBuildCreator(object):
             raise Exception(
                 "Build template not found for service type {}".format(service_definition.get_service_type()))
         else:
-            build_template = self.build_templates.get(service_definition.get_service_type())
+            build_type = self.build_templates.get(service_definition.get_service_type())['type']
         if os.path.exists(self._get_travis_file(service_dir)):
             logging.warn("travis build file exists - enabling repo")
             self._invoke_travis([ 'enable'], exec_dir=service_dir)
         else:
-            self.create_build(service_dir, build_template,service_definition)
+            build_template = self.build_configuration.get(build_type,None)
+            if build_template:
+                self.create_build(service_dir, build_template,service_definition)
+            else:
+                logging.warn("Could not locate build template for build type - "+build_type)
 
     def _get_travis_file(self, service_dir):
         return os.path.join(service_dir, ".travis.yml")
