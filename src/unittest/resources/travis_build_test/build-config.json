@@ -1,0 +1,11 @@
+{
+  "provider":"travis",
+  "use-travis-open-source":true,
+  "build-templates": {
+    "test": {
+      "language":"python",
+      "install":"foo",
+      "script":"bar"
+    }
+  }
+}

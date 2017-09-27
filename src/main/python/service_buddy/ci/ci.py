@@ -2,6 +2,7 @@ import json
 import os
 import logging
 from service_buddy.ci.bamboo_build_creator import BambooBuildCreator
+from service_buddy.ci.travis_build_creator import TravisBuildCreator
 
 
 class BuildCreator(object):
@@ -18,12 +19,14 @@ class BuildCreator(object):
             logging.warn("Could not local 'build-config.json' in code template directory")
             self.default_provider = "bamboo"
         self.code_creators = {
-            BambooBuildCreator.get_type(): BambooBuildCreator(template_dir=template_directory,
-                                                              dry_run=dry_run,
-                                                              default_config=self.default_config,
-                                                              build_templates=self.build_templates)}
+            BambooBuildCreator.get_type(): BambooBuildCreator(),
+            TravisBuildCreator.get_type(): TravisBuildCreator()}
         if self.default_provider not in self.code_creators:
             raise Exception("Requested provider is not configured {}".format(self.default_provider))
+        else:
+            self._get_default_build_creator().init(dry_run=dry_run,
+                                                   default_config=self.default_config,
+                                                   build_templates=self.build_templates)
 
     def _get_default_build_creator(self):
         # type: () -> BuildCreator
