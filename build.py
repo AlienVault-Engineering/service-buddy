@@ -29,8 +29,8 @@ def initialize(project):
     project.url = "https://github.com/AlienVault-Engineering/service-buddy"
     project.depends_on_requirements("requirements.txt")
     #Build and test settings
-    # project.set_property("run_unit_tests_propagate_stdout",True)
-    # project.set_property("run_unit_tests_propagate_stderr",True)
+    project.set_property("run_unit_tests_propagate_stdout",True)
+    project.set_property("run_unit_tests_propagate_stderr",True)
     project.set_property("coverage_branch_threshold_warn", 49)
     project.include_file('service_buddy',"code/builtin-code-templates.json")
     project.set_property("distutils_upload_repository","pypi")
