@@ -10,7 +10,7 @@ class BambooBuildCreator(object):
         self.url = default_config['bamboo-url']
         self.build_templates = build_templates
 
-    def create_project(self, service_definition,service_dir):
+    def create_project(self, service_definition,app_dir):
         if service_definition.get_service_type() not in self.build_templates:
             raise Exception("Build template not found for service type {}".format(service_definition.get_service_type()))
         else:

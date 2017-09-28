@@ -7,8 +7,10 @@
     }
   },
   "build-configuration": {
-    "language": "python",
-    "install": "foo",
-    "script": "bar"
+    "example": {
+      "language": "python",
+      "install": "foo ${BUILD_TIME_VARIABLE}",
+      "script": "bar {role}"
+    }
   }
 }

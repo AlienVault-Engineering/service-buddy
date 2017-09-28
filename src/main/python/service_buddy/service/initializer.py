@@ -10,14 +10,18 @@ from service_buddy.util.pretty_printer import pretty_print_service
 
 
 class Initializer(object):
-    def __init__(self, vcs, destination_directory, dry_run, service_template_definitions,
+    def __init__(self, vcs, destination_directory, dry_run, code_template_directory,
+                 skip_code_creation=False,
                  skip_build_creation=False,
                  skip_git_creation=False):
         super(Initializer, self).__init__()
+        self.skip_code_creation = skip_code_creation
         self.skip_build_creation = skip_build_creation
         self.skip_git_creation = skip_git_creation
-        self.code_generator = CodeCreator(service_template_definitions, dry_run)
-        self.build_creator = BuildCreator(service_template_definitions, dry_run)
+        self.code_generator = CodeCreator(code_template_directory=code_template_directory,
+                                          dry_run=dry_run)
+        self.build_creator = BuildCreator(template_directory=code_template_directory,
+                                          dry_run=dry_run)
         self.dry_run = dry_run
         safe_mkdir(directory=destination_directory)
         self.destination_directory = destination_directory
@@ -28,17 +32,17 @@ class Initializer(object):
 
     def init_service(self, definition):
         # type: (Service ) -> None
+        app_dir = ensure_app_directory_exists(self.destination_directory, service_defintion=definition)
         if definition.repo_exists():
             logging.info("Service exists - {}".format(definition.get_fully_qualified_service_name()))
             if definition.force_recreate_build():
-                self.build_creator.create_project(service_definition=definition)
+                self.build_creator.create_project(service_definition=definition,app_dir=app_dir)
             return
         logging.info("Creating Service -{}".format(definition.get_fully_qualified_service_name()))
-        app_dir = ensure_app_directory_exists(self.destination_directory, service_defintion=definition)
         pretty_print_service(definition)
-        self.code_generator.create_project(definition, app_dir)
+        if not self.skip_code_creation: self.code_generator.create_project(definition, app_dir)
         if not self.skip_git_creation: self.vcs.create_project(definition, app_dir)
-        if not self.skip_build_creation: self.build_creator.create_project(definition)
+        if not self.skip_build_creation: self.build_creator.create_project(definition,app_dir)
 
     def initialize_services(self, application_map):
         walk_service_map(application_map=application_map, application_callback=self.init_app,

@@ -21,22 +21,47 @@ class TravisBuildTestCase(ParentTestCase):
     def setUpClass(cls):
         super(TravisBuildTestCase, cls).setUpClass()
         cls.test_resources = os.path.join(DIRNAME, '../resources/travis_build_test')
-        cls.yml_folder = os.path.join(cls.test_resources,"app1","service")
+        cls.yml_folder = os.path.join(cls.test_resources, "app1", "service")
+        cls.app_dir = os.path.join(cls.test_resources, "app1")
 
     def test_travis_file_detection(self):
-        build_creator = BuildCreator(dry_run=True,template_directory=self.test_resources)
-        test_service = Service(app="app1", role="service",definition={"service-type":"test"})
-        build_creator.create_project(service_definition=test_service,service_dir=self.yml_folder)
+        build_creator = BuildCreator(dry_run=True, template_directory=self.test_resources)
+        test_service = Service(app="app1", role="service", definition={"service-type": "test"})
+        build_creator.create_project(service_definition=test_service, app_dir=self.app_dir)
+        self._assertInYaml({"ubar":"Overwrote existing travis.yml"},self.yml_folder)
         temp = mkdtemp()
-        build_creator.create_project(service_definition=test_service,service_dir=temp)
+        loader.safe_mkdir(test_service.get_service_directory(temp))
+        build_creator._get_default_build_creator().dry_run = False
+        build_creator.create_project(service_definition=test_service, app_dir=temp)
+
+    def test_travis_arg_render(self):
+        items = "infra-buddy validate-template --service-template-directory . --service-type {role}"
+        item2 = "pyb install_dependencies package -P build_number=0.1.${TRAVIS_BUILD_NUMBER}"
+        list_args = []
+        TravisBuildCreator._append_rendered_arguments(list_args, items, {'role': 'vbar'})
+        self.assertTrue("vbar" in list_args[0],"Did not render properly")
+        TravisBuildCreator._append_rendered_arguments(list_args, item2, {'role': 'vbar'})
+        self.assertTrue("${TRAVIS_BUILD_NUMBER}" in list_args[1],"Did not render properly")
+
 
     def test_yml_update(self):
         temp = mkdtemp()
         source = os.path.join(self.yml_folder, '.travis.yml')
         destination = os.path.join(temp, '.travis.yml')
-        shutil.copy(source,destination)
-        build_creator = BuildCreator(dry_run=True,template_directory=self.test_resources)
+        shutil.copy(source, destination)
+        build_creator = BuildCreator(dry_run=True, template_directory=self.test_resources)
         build_creator._get_default_build_creator()._write_deploy_stanza(temp)
+        self._assertInYaml({"deploy":"Cound not find deploy stanza"},temp)
+
+    def _assertInList(self, param, line_list, error_message):
+        for line in line_list:
+            if param in line:
+                return
+        self.fail(error_message)
+
+    def _assertInYaml(self, expected_error_msg, directory):
+        destination = os.path.join(directory, '.travis.yml')
         with open(destination) as desty:
             readlines = desty.readlines()
-            self.assertTrue("deploy\n"in readlines,"Could not find stanza")
+            for expected, error_msg in expected_error_msg.iteritems():
+                self._assertInList(expected, readlines, error_msg)

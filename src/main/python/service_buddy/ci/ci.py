@@ -32,6 +32,6 @@ class BuildCreator(object):
         # type: () -> BuildCreator
         return self.code_creators[self.default_provider]
 
-    def create_project(self, service_definition, service_dir=None):
+    def create_project(self, service_definition, app_dir):
         return self._get_default_build_creator().create_project(service_definition=service_definition,
-                                                                service_dir=service_dir)
+                                                                app_dir=app_dir)

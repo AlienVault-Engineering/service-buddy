@@ -8,7 +8,7 @@ DESCRIPTION = 'description'
 ROLE = 'role'
 APPLICATION = 'application'
 FQN = 'project_name'
-FORCE_RECREATE_BUILD = 'recreate_build'
+FORCE_RECREATE_BUILD = 'recreate-build'
 SERVICE_TYPE = 'service-type'
 
 
@@ -25,7 +25,7 @@ class Service(dict):
         return "{application}-{role}".format(**self).replace(' ','_')
 
     def force_recreate_build(self):
-        return self.get(FORCE_RECREATE_BUILD,False)
+        return self.get(FORCE_RECREATE_BUILD,os.environ.get('RECREATE_BUILDS',False))
 
     def get_description(self):
         return self[DESCRIPTION]
