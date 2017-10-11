@@ -22,8 +22,10 @@ class BambooBuildCreator(object):
             '--build-template', build_template,
             '--bamboo-url', self.url,
             '--application', service_definition.get_app(),
-            '--role', service_definition.get_role()
+            '--role', service_definition.get_role(),
+            '-Dbamboo.specs.log.level=DEBUG'
         ]
+
         invoke_process(args, dry_run=self.dry_run)
 
     @classmethod
