@@ -17,7 +17,7 @@ class BambooBuildCreator(object):
             build_template = self.build_templates.get(service_definition.get_service_type())['type']
         args = [
             'java',
-            '-Dbamboo.specs.log.level=DEBUG'
+            '-Dbamboo.specs.log.level=DEBUG',
             '-jar',
             'bamboo-plan-1.0-SNAPSHOT.jar',
             '--build-template', build_template,
