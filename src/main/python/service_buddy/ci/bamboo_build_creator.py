@@ -17,13 +17,13 @@ class BambooBuildCreator(object):
             build_template = self.build_templates.get(service_definition.get_service_type())['type']
         args = [
             'java',
+            '-Dbamboo.specs.log.level=DEBUG'
             '-jar',
             'bamboo-plan-1.0-SNAPSHOT.jar',
             '--build-template', build_template,
             '--bamboo-url', self.url,
             '--application', service_definition.get_app(),
-            '--role', service_definition.get_role(),
-            '-Dbamboo.specs.log.level=DEBUG'
+            '--role', service_definition.get_role()
         ]
 
         res = invoke_process(args, dry_run=self.dry_run)
