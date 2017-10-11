@@ -26,7 +26,9 @@ class BambooBuildCreator(object):
             '-Dbamboo.specs.log.level=DEBUG'
         ]
 
-        invoke_process(args, dry_run=self.dry_run)
+        res = invoke_process(args, dry_run=self.dry_run)
+        if res>0:
+            raise Exception("Error creating bamboo build")
 
     @classmethod
     def get_type(cls):
