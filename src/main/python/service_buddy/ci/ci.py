@@ -35,5 +35,5 @@ class BuildCreator(object):
 
     def create_project(self, service_definition, app_dir):
         # type: (Service, str) -> object
-        if not service_definition.does_repo_exist() or self.always_recreate_builds:
+        if not service_definition.repo_exists() or self.always_recreate_builds:
             return self._get_default_build_creator().create_project(service_definition=service_definition,app_dir=app_dir)
