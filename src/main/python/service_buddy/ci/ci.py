@@ -14,6 +14,7 @@ class BuildCreator(object):
                 defaults = json.load(fp)
                 self.default_provider = defaults.get('provider', None)
                 self.build_templates = defaults.get('build-templates', {})
+                self.always_recreate_builds = defaults.get('build-creation-is-idempotent', True)
                 self.default_config = defaults
         else:
             logging.warn("Could not local 'build-config.json' in code template directory")
@@ -33,5 +34,6 @@ class BuildCreator(object):
         return self.code_creators[self.default_provider]
 
     def create_project(self, service_definition, app_dir):
-        return self._get_default_build_creator().create_project(service_definition=service_definition,
-                                                                app_dir=app_dir)
+        # type: (Service, str) -> object
+        if not service_definition.does_repo_exist() or self.always_recreate_builds:
+            return self._get_default_build_creator().create_project(service_definition=service_definition,app_dir=app_dir)
