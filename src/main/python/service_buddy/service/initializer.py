@@ -34,13 +34,29 @@ class Initializer(object):
         # type: (Service ) -> None
         app_dir = ensure_app_directory_exists(self.destination_directory, service_defintion=definition)
         if not definition.repo_exists():
-            logging.info("Creating Service -{}".format(definition.get_fully_qualified_service_name()))
-            if not self.skip_code_creation: self.code_generator.create_project(definition, app_dir)
-            if not self.skip_git_creation: self.vcs.create_project(definition, app_dir)
+            logging.info("Creating Service - %r", definition.get_fully_qualified_service_name())
+            if self.skip_code_creation:
+                logging.info("Skipping code creation")
+            else:
+                logging.info("Running code creation")
+                self.code_generator.create_project(definition, app_dir)
+
+            if self.skip_git_creation:
+                logging.info("Skipping git creation")
+            else:
+                logging.info("Running git creation")
+                self.vcs.create_project(definition, app_dir)
         else:
             logging.info("Service exists - {}".format(definition.get_fully_qualified_service_name()))
-        if not self.skip_build_creation: self.build_creator.create_project(definition,app_dir)
+
+        if self.skip_build_creation:
+            logging.info("Skipping build creation")
+        else:
+            logging.info("Running build creation")
+            self.build_creator.create_project(definition, app_dir)
+
         pretty_print_service(definition)
+        logging.info("Done creating Service - %r", definition.get_fully_qualified_service_name())
 
     def initialize_services(self, application_map):
         walk_service_map(application_map=application_map, application_callback=self.init_app,

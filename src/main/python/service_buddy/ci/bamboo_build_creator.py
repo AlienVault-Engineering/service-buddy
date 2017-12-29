@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 from service_buddy.util.command_util import invoke_process
 
@@ -10,11 +11,12 @@ class BambooBuildCreator(object):
         self.url = default_config['bamboo-url']
         self.build_templates = build_templates
 
-    def create_project(self, service_definition,app_dir):
+    def create_project(self, service_definition, app_dir):
+        logging.info("Creating bamboo build")
         if service_definition.get_service_type() not in self.build_templates:
             raise Exception("Build template not found for service type {}".format(service_definition.get_service_type()))
-        else:
-            build_template = self.build_templates.get(service_definition.get_service_type())['type']
+
+        build_template = self.build_templates.get(service_definition.get_service_type())['type']
         args = [
             'java',
             '-Dbamboo.specs.log.level=DEBUG',
@@ -27,8 +29,10 @@ class BambooBuildCreator(object):
         ]
 
         res = invoke_process(args, dry_run=self.dry_run)
-        if res>0:
+        if res > 0:
             raise Exception("Error creating bamboo build")
+        else:
+            logging.info("Done creating bamboo build")
 
     @classmethod
     def get_type(cls):

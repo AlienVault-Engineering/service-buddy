@@ -37,3 +37,4 @@ from service_buddy.commands.initialize import command
 from service_buddy.commands.list import command
 # noinspection PyUnresolvedReferences
 from service_buddy.commands.bootstrap import command
+
