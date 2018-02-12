@@ -19,6 +19,7 @@ def invoke_process(args, exec_dir=None, dry_run=False):
         try:
             output = subprocess.check_output(**arg_list)
         except subprocess.CalledProcessError, e:
+            output = ""
             returncode = e.returncode
 
         for line in output.splitlines():

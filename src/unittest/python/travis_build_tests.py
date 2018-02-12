@@ -1,7 +1,7 @@
+import logging
 import os
-from tempfile import mkdtemp
-
 import shutil
+from tempfile import mkdtemp
 
 from service_buddy.ci.ci import BuildCreator
 from service_buddy.ci.travis_build_creator import TravisBuildCreator
