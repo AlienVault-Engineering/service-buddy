@@ -5,9 +5,9 @@ from collections import defaultdict
 
 from service_buddy.service.application import Application
 from service_buddy.service.service import Service
+import re
 
-
-def load_service_definitions(service_directory, app_filter=None):
+def load_service_definitions(service_directory, app_filter=None, service_filter=None):
     service_dir = os.path.abspath(service_directory)
     listdir = os.listdir(service_dir)
     service_map = defaultdict(dict)
@@ -21,8 +21,11 @@ def load_service_definitions(service_directory, app_filter=None):
                 with open(service_definition_file) as service_def:
                     service_definitions = json.load(service_def)
                     for role, definition in service_definitions.iteritems():
-                        service_map[dir].add_service(role, Service(app=dir, role=role, definition=definition,
-                                                                   app_reference=service_map[dir]))
+                        if re.match(service_filter or ".*", role):
+                            service_map[dir].add_service(
+                                role, Service(app=dir, role=role, definition=definition,
+                                app_reference=service_map[dir])
+                            )
     return service_map
 
 
