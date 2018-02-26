@@ -13,9 +13,12 @@ class Initializer(object):
     def __init__(self, vcs, destination_directory, dry_run, code_template_directory,
                  skip_code_creation=False,
                  skip_build_creation=False,
-                 skip_git_creation=False):
+                 skip_git_creation=False,
+                 force_build_creation=False,
+                 ):
         super(Initializer, self).__init__()
         self.skip_code_creation = skip_code_creation
+        self.force_build_creation = force_build_creation
         self.skip_build_creation = skip_build_creation
         self.skip_git_creation = skip_git_creation
         self.code_generator = CodeCreator(code_template_directory=code_template_directory,
@@ -53,7 +56,7 @@ class Initializer(object):
             logging.info("Skipping build creation")
         else:
             logging.info("Running build creation")
-            self.build_creator.create_project(definition, app_dir)
+            self.build_creator.create_project(definition, app_dir, force_build_creation=self.force_build_creation)
 
         pretty_print_service(definition)
         logging.info("Done creating Service - %r", definition.get_fully_qualified_service_name())

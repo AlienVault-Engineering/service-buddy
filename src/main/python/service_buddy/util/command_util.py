@@ -24,6 +24,6 @@ def invoke_process(args, exec_dir=None, dry_run=False):
 
         for line in output.splitlines():
             logging.info(u'[exec] %s', line)
-        logging.info(u'[exec] invoke_process complete', args, exec_dir, dry_run)
+        logging.info(u'[exec] invoke_process complete args=%r, exec_dir=%r, dry_run=%r', args, exec_dir, dry_run)
 
         return returncode
