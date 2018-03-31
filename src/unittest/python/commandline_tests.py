@@ -1,9 +1,9 @@
+import json
 import os
 
 import click
 
 from click.testing import CliRunner
-from flask import json
 
 from service_buddy.commandline import cli
 from service_buddy.context.service_context import ServiceContext
