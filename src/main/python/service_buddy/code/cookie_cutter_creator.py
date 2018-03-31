@@ -19,14 +19,15 @@ class CookeCutterProjectCreator(object):
         self.templates =templates
         self.dry_run = dry_run
 
-    def create_project(self, service_definition, app_dir):
+    def create_project(self, service_definition, app_dir,extra_config=None):
         template = self._lookup_service_template(service_definition.get_service_type())
         if template['type'] == 'file':
             location = os.path.abspath(os.path.join(self.template_dir, template['location']))
         else:
             location = template['location']
-
         extra_context = _make_cookie_safe(service_definition)
+        if extra_config:
+            extra_context.update(_make_cookie_safe(extra_config))
         if self.dry_run:
             logging.error("Creating project from template {} ".format(location))
         else:

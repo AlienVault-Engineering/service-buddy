@@ -4,6 +4,10 @@ import logging
 from service_buddy.ci.bamboo_build_creator import BambooBuildCreator
 from service_buddy.ci.travis_build_creator import TravisBuildCreator
 
+build_system_map = {
+            BambooBuildCreator.get_type(): BambooBuildCreator(),
+            TravisBuildCreator.get_type(): TravisBuildCreator()}
+build_systems = [key for key in build_system_map.iterkeys()]
 
 class BuildCreator(object):
     def __init__(self, template_directory, dry_run):
@@ -14,27 +18,27 @@ class BuildCreator(object):
                 defaults = json.load(fp)
                 self.default_provider = defaults.get('provider', None)
                 self.build_templates = defaults.get('build-templates', {})
+                self.user = defaults.get('user', os.environ.get('BUILD_SYSTEM_USER'))
+                self.password = defaults.get('password', os.environ.get('BUILD_SYSTEM_PASSWORD'))
                 self.always_recreate_builds = defaults.get('build-creation-is-idempotent', True)
                 self.default_config = defaults
         else:
             logging.warn("Could not local 'build-config.json' in code template directory")
             self.default_provider = "bamboo"
-        self.code_creators = {
-            BambooBuildCreator.get_type(): BambooBuildCreator(),
-            TravisBuildCreator.get_type(): TravisBuildCreator()}
-        if self.default_provider not in self.code_creators:
+        if self.default_provider not in build_system_map:
             raise Exception("Requested provider is not configured {}".format(self.default_provider))
         else:
             creator = self._get_default_build_creator()
             creator.init(
                 dry_run=dry_run,
                 default_config=self.default_config,
-                build_templates=self.build_templates
+                build_templates=self.build_templates,
+                user=self.user, password=self.password
             )
 
     def _get_default_build_creator(self):
         # type: () -> BuildCreator
-        return self.code_creators[self.default_provider]
+        return build_system_map[self.default_provider]
 
     def create_project(self, service_definition, app_dir, force_build_creation=False):
         # type: (Service, str) -> object

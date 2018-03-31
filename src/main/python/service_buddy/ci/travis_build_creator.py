@@ -8,7 +8,11 @@ from service_buddy.util.command_util import invoke_process
 
 
 class TravisBuildCreator(object):
-    def init(self, dry_run, default_config, build_templates):
+
+    def options(self):
+        return {}
+
+    def init(self, dry_run, default_config, build_templates,user=None, password=None):
         self.dry_run = dry_run
         self.build_templates = build_templates
         self.build_configuration = default_config.get('build-configuration',{})

@@ -11,6 +11,7 @@ class GitHubVCSProvider(object):
     def get_type(cls):
         return 'github'
 
+
     def __init__(self, ):
         super(GitHubVCSProvider, self).__init__()
         self.repo_root = ""

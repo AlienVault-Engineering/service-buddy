@@ -2,6 +2,7 @@ import json
 import os
 
 import logging
+from collections import OrderedDict
 
 from Bitbucket import BitbucketVCSProvider
 from service_buddy.service.loader import walk_service_map, safe_mkdir, ensure_app_directory_exists, \
@@ -11,6 +12,15 @@ from service_buddy.util.command_util import invoke_process
 from service_buddy.vcs.github_vcs import GitHubVCSProvider
 
 
+vcs_provider_map = {
+    BitbucketVCSProvider.get_type(): BitbucketVCSProvider(),
+    GitHubVCSProvider.get_type(): GitHubVCSProvider()}
+vcs_providers = [key for key in vcs_provider_map.iterkeys()]
+
+options = OrderedDict()
+options['root-user']="Organization name. team name or root user used by vcs provider"
+options['user']="Username for authentication when creating repositories"
+options['password']="Password for authentication when creating repositories"
 class VCS(object):
     def __init__(self, service_directory, dry_run):
         super(VCS, self).__init__()
@@ -26,17 +36,14 @@ class VCS(object):
             raise Exception("Could not local 'vcs-config.json' in service directory")
         self.dry_run = dry_run
 
-        self.vcs_providers = {
-            BitbucketVCSProvider.get_type(): BitbucketVCSProvider(),
-            GitHubVCSProvider.get_type(): GitHubVCSProvider()}
 
-        if self.default_provider not in self.vcs_providers:
+        if self.default_provider not in vcs_provider_map:
             raise Exception("Requested provider is not configured {}".format(self.default_provider))
         else:
             self._get_default_vcs_provider().init(self.user, self.password, self.repo_root, dry_run)
 
     def _get_default_vcs_provider(self):
-        return self.vcs_providers[self.default_provider]
+        return vcs_provider_map[self.default_provider]
 
     def validate_repositories(self, application_map):
         def populate_repo_metadata(service_definition):

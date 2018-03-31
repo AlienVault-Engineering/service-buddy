@@ -56,10 +56,10 @@ class CodeCreator(object):
         # type: () -> CodeCreator
         return self.code_creators[self.default_provider]
 
-    def create_project(self, service_definition, app_dir):
+    def create_project(self, service_definition, app_dir, extra_config=None):
         # type: (Service, str) -> None
         project = self.get_default_code_creator().create_project(service_definition=service_definition,
-                                                                 app_dir=app_dir)
+                                                                 app_dir=app_dir,extra_config=extra_config)
         service_type_ = self.templates[service_definition.get_service_type()]
         create_service_def = service_type_.get('generate-service-definition', True)
         if create_service_def:
