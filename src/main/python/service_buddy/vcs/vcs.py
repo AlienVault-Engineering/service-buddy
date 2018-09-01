@@ -102,6 +102,7 @@ class VCS(object):
                 logging.warn("Service '{}' did not exist in destination directory - {}".format(service_defintion.get_fully_qualified_service_name(),destination_directory))
                 logging.warn("Skipping running git command - git {}".format(str(args)))
                 return
+            logging.warn("Invoking git in directory - '{}' ".format(destination_dir))
             git_args = ['git']
             git_args.extend(args)
             invoke_process(git_args, destination_dir, self.dry_run)
