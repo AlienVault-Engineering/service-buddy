@@ -5,6 +5,11 @@
     "generate-service-definition":false
 
   },
+  "pycontainer": {
+    "type": "github",
+    "location": "https://github.com/AlienVault-Engineering/service-buddy-code-template-pycontainer",
+    "generate-service-definition":false
+  },
   "service-buddy-master": {
     "type": "github",
     "location": "https://github.com/AlienVault-Engineering/code-template-service-buddy-master",
