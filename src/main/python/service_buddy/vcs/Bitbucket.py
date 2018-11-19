@@ -46,12 +46,12 @@ class BitbucketVCSProvider(object):
                 bitbucket_url = 'ssh://git@bitbucket.org/{}'.format(fq_repository_name)
                 result = invoke_process(args=['git', 'ls-remote', bitbucket_url, '>', '/dev/null'], exec_dir=None, dry_run=self.dry_run)
                 if result != 0:
-                    logging.info("Could not find repository with git executable - {}".format(service_definition.get_repository_name()))
+                    logging.info("Could not find repository with git executable - %r", service_definition.get_repository_name())
                     bitbucket_url = None
             return bitbucket_url
         except HTTPError as e:
-            logging.info("Could not find repository through Bitbucket API - {} (error={})".format(
-                service_definition.get_repository_name()),
+            logging.info("Could not find repository through Bitbucket API - %r (error=%r)",
+                service_definition.get_repository_name(),
                 e,
             )
 
@@ -63,7 +63,7 @@ class BitbucketVCSProvider(object):
                     .add_owner(self.team_root_user)\
                     .add_fork_policy(RepositoryForkPolicy.NO_PUBLIC_FORKS)
         if self.dry_run:
-            logging.error("Creating repo {}".format(str(payload._payload)))
+            logging.error("Creating repo %r", str(payload._payload))
         else:
             if self.client == None:
                 raise Exception("VCS pass required for create repo operation")
