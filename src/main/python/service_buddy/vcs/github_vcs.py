@@ -48,7 +48,7 @@ class GitHubVCSProvider(object):
                     ssh_url = None
             return ssh_url
         except HTTPError:
-            logging.info("Could not find repository through API - {}".format(service_definition.get_repository_name()))
+            logging.info("Could not find repository through github API - {}".format(service_definition.get_repository_name()))
 
     def create_repo(self, service_defintion):
         # name, description=github.GithubObject.NotSet,

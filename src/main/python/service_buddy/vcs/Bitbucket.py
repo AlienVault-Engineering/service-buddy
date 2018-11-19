@@ -44,13 +44,16 @@ class BitbucketVCSProvider(object):
                 bitbucket_url = repo.clone['ssh']
             else:
                 bitbucket_url = 'ssh://git@bitbucket.org/{}'.format(fq_repository_name)
-                result = invoke_process(args=['git', 'ls-remote', bitbucket_url, '>','/dev/null'], exec_dir=None, dry_run=self.dry_run)
+                result = invoke_process(args=['git', 'ls-remote', bitbucket_url, '>', '/dev/null'], exec_dir=None, dry_run=self.dry_run)
                 if result != 0:
                     logging.info("Could not find repository with git executable - {}".format(service_definition.get_repository_name()))
                     bitbucket_url = None
             return bitbucket_url
-        except HTTPError:
-            logging.info("Could not find repository through API - {}".format(service_definition.get_repository_name()))
+        except HTTPError as e:
+            logging.info("Could not find repository through Bitbucket API - {} (error={})".format(
+                service_definition.get_repository_name()),
+                e,
+            )
 
     def create_repo(self, service_defintion):
         payload = RepositoryPayload()\

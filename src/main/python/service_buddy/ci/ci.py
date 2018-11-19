@@ -9,6 +9,7 @@ build_system_map = {
             TravisBuildCreator.get_type(): TravisBuildCreator()}
 build_systems = [key for key in build_system_map.iterkeys()]
 
+
 class BuildCreator(object):
     def __init__(self, template_directory, dry_run):
         super(BuildCreator, self).__init__()
