@@ -1,6 +1,5 @@
-from service_buddy.service import loader
-from service_buddy.vcs.Bitbucket import BitbucketVCSProvider
-from service_buddy.vcs.github_vcs import GitHubVCSProvider
+from service import loader
+from vcs.github_vcs import GitHubVCSProvider
 from testcase_parent import ParentTestCase
 
 

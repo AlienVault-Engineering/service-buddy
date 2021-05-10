@@ -1,7 +1,7 @@
 import os
 
-from service_buddy.service import loader
-from service_buddy.util import pretty_printer
+from service import loader
+from util import pretty_printer
 from testcase_parent import ParentTestCase
 
 DIRNAME = os.path.dirname(os.path.abspath(__file__))
@@ -34,7 +34,7 @@ class ServiceLoadTestCase(ParentTestCase):
         self._validate_service_definition(app1)
 
     def _validate_service_definition(self, app):
-        for key, value in app.iteritems():
+        for key, value in app.items():
             self.assertTrue(value.get_service_type()is not None, "Did not load service type for {}".format(key))
             self.assertTrue(value.get_description() is not None, "Did not load service description for {}".format(key))
             self.assertTrue(value.get_repository_name() is not None, "Did not load service repo name for {}".format(key))

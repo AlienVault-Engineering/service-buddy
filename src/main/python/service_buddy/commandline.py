@@ -1,7 +1,7 @@
 import click
 
-from service_buddy.context.service_context import ServiceContext
-from service_buddy.util.log_handler import configure_logging
+from context.service_context import ServiceContext
+from util.log_handler import configure_logging
 
 
 @click.group()
@@ -21,7 +21,6 @@ from service_buddy.util.log_handler import configure_logging
 @click.option("--dry-run", is_flag=True, help='Preview effect of action')
 @click.pass_context
 def cli(ctx, application_filter, service_filter, service_directory, destination_directory, verbose, dry_run):
-    # type: (object, str,str, str ,bool, bool) -> None
     """
     CLI for managing the repositories and build pipeline in a micro-service architecture..
     """
@@ -36,13 +35,13 @@ def cli(ctx, application_filter, service_filter, service_directory, destination_
 
 
 # noinspection PyUnresolvedReferences
-from service_buddy.commands.clone import command
+from commands.clone import command
 # noinspection PyUnresolvedReferences
-from service_buddy.commands.git import command
+from commands.git import command
 # noinspection PyUnresolvedReferences
-from service_buddy.commands.initialize import command
+from commands.initialize import command
 # noinspection PyUnresolvedReferences
-from service_buddy.commands.list import command
+from commands.list import command
 # noinspection PyUnresolvedReferences
-from service_buddy.commands.bootstrap import command
+from commands.bootstrap import command
 

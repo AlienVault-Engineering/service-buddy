@@ -1,4 +1,4 @@
-from service_buddy.util import command_util
+from util import command_util
 from testcase_parent import ParentTestCase
 
 

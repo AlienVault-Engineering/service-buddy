@@ -1,12 +1,11 @@
 import logging
 
-from service_buddy.ci.ci import BuildCreator
-from service_buddy.code.code_creator import CodeCreator
-from service_buddy.service.loader import safe_mkdir, walk_service_map, \
+from ci.ci import BuildCreator
+from code.code_creator import CodeCreator
+from service.loader import safe_mkdir, walk_service_map, \
     ensure_app_directory_exists
-from service_buddy.service.service import Service
-from service_buddy.service.service_template_generator import ServiceTemplateGenerator
-from service_buddy.util.pretty_printer import pretty_print_service
+from service.service import Service
+from util.pretty_printer import pretty_print_service
 
 
 class Initializer(object):

@@ -7,6 +7,6 @@ class Application(dict):
         self[role] = service
 
     def get_contract_test_git_url(self):
-        for name,definition in self.iteritems():
+        for name,definition in self.items():
             if definition.get_service_type() == 'contract-tests':
                 return definition.get_git_url()

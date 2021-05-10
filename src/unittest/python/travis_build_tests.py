@@ -1,13 +1,11 @@
-import logging
 import os
 import shutil
 from tempfile import mkdtemp
 
-from service_buddy.ci.ci import BuildCreator
-from service_buddy.ci.travis_build_creator import TravisBuildCreator
-from service_buddy.service import loader
-from service_buddy.service.service import Service
-from service_buddy.util import pretty_printer
+from ci.ci import BuildCreator
+from ci.travis_build_creator import TravisBuildCreator
+from service import loader
+from service.service import Service
 from testcase_parent import ParentTestCase
 
 DIRNAME = os.path.dirname(os.path.abspath(__file__))
@@ -63,5 +61,5 @@ class TravisBuildTestCase(ParentTestCase):
         destination = os.path.join(directory, '.travis.yml')
         with open(destination) as desty:
             readlines = desty.readlines()
-            for expected, error_msg in expected_error_msg.iteritems():
+            for expected, error_msg in expected_error_msg.items():
                 self._assertInList(expected, readlines, error_msg)

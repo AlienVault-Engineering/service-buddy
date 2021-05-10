@@ -1,13 +1,11 @@
 import json
-import os
-
 import logging
-
+import os
 from copy import deepcopy
 
-from service_buddy.service.service import Service
-from service_buddy.code.cookie_cutter_creator import CookeCutterProjectCreator
-from service_buddy.service.service_template_generator import ServiceTemplateGenerator
+from code.cookie_cutter_creator import CookeCutterProjectCreator
+from service.service import Service
+from service.service_template_generator import ServiceTemplateGenerator
 
 
 class CodeCreator(object):
@@ -37,7 +35,7 @@ class CodeCreator(object):
 
     def _resolve_alias(self, templates):
         ret = {}
-        for key, value in templates.iteritems():
+        for key, value in templates.items():
             if value['type'] == 'alias':
                 ret[key] = deepcopy(templates[value['lookup']])
                 value.pop('type')

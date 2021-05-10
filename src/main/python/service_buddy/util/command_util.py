@@ -1,7 +1,7 @@
 import logging
 import subprocess
 
-from service_buddy.util.log_handler import print_red_bold
+from util.log_handler import print_red_bold
 
 
 def invoke_process(args, exec_dir=None, dry_run=False):

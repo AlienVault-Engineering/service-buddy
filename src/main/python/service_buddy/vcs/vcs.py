@@ -1,21 +1,19 @@
 import json
-import os
-
 import logging
+import os
 from collections import OrderedDict
 
-from Bitbucket import BitbucketVCSProvider
-from service_buddy.service.loader import walk_service_map, safe_mkdir, ensure_app_directory_exists, \
+from service.loader import walk_service_map, safe_mkdir, ensure_app_directory_exists, \
     ensure_service_directory_exists
-from service_buddy.service.service import Service
-from service_buddy.util.command_util import invoke_process
-from service_buddy.vcs.github_vcs import GitHubVCSProvider
-
+from service.service import Service
+from util.command_util import invoke_process
+from vcs.bitbucket import BitbucketVCSProvider
+from vcs.github_vcs import GitHubVCSProvider
 
 vcs_provider_map = {
     BitbucketVCSProvider.get_type(): BitbucketVCSProvider(),
     GitHubVCSProvider.get_type(): GitHubVCSProvider()}
-vcs_providers = [key for key in vcs_provider_map.iterkeys()]
+vcs_providers = [key for key in vcs_provider_map.keys()]
 
 options = OrderedDict()
 options['root-user']="Organization name. team name or root user used by vcs provider"
@@ -83,7 +81,7 @@ class VCS(object):
                 args = ['git', 'clone', clone_url,service_defintion.get_fully_qualified_service_name()]
                 service_directory = service_defintion.get_service_directory(app_dir=app_dir)
                 if os.path.exists(service_directory):
-                    logging.warn("Skipping clone step directory exists - {}".format(service_directory))
+                    logging.warning("Skipping clone step directory exists - {}".format(service_directory))
                 else:
                     invoke_process(args, app_dir, self.dry_run)
 
@@ -99,10 +97,10 @@ class VCS(object):
                                                               service_defintion=service_defintion,
                                                               create=False)
             if not destination_directory:
-                logging.warn("Service '{}' did not exist in destination directory - {}".format(service_defintion.get_fully_qualified_service_name(),destination_directory))
-                logging.warn("Skipping running git command - git {}".format(str(args)))
+                logging.warning("Service '{}' did not exist in destination directory - {}".format(service_defintion.get_fully_qualified_service_name(),destination_directory))
+                logging.warning("Skipping running git command - git {}".format(str(args)))
                 return
-            logging.warn("Invoking git in directory - '{}' ".format(destination_dir))
+            logging.warning("Invoking git in directory - '{}' ".format(destination_dir))
             git_args = ['git']
             git_args.extend(args)
             invoke_process(git_args, destination_dir, self.dry_run)

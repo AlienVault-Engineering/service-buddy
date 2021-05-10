@@ -1,12 +1,11 @@
 import os
 
-
 # noinspection PyUnresolvedReferences
 from infra_buddy.commandline import cli
 from infra_buddy.commands.generate_service_definition import command as gen_service
 from infra_buddy.context.deploy_ctx import DeployContext
 
-from service_buddy.service.loader import safe_mkdir
+from service.loader import safe_mkdir
 
 
 class ServiceTemplateGenerator(object):

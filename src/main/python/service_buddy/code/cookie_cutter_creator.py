@@ -1,13 +1,12 @@
-import json
+import logging
 import os
 
-import logging
 from cookiecutter.main import cookiecutter
 
 
 def _make_cookie_safe(service_definition):
     ret = {}
-    for key, valey in service_definition.iteritems():
+    for key, valey in service_definition.items():
         ret[key.replace('-', "_")] = valey
     return ret
 

@@ -1,11 +1,12 @@
 import json
 import logging
 import os
+import re
 from collections import defaultdict
 
-from service_buddy.service.application import Application
-from service_buddy.service.service import Service
-import re
+from service.application import Application
+from service.service import Service
+
 
 def load_service_definitions(service_directory, app_filter=None, service_filter=None):
     service_dir = os.path.abspath(service_directory)
@@ -15,12 +16,12 @@ def load_service_definitions(service_directory, app_filter=None, service_filter=
         if _is_valid_app(dir, service_dir) and application_filter(app_filter, dir):
             service_definition_file = os.path.join(service_dir, dir, 'service.json')
             if not os.path.exists(service_definition_file):
-                logging.warn("Skipping invalid application directory - no service.json exists - {}".format(service_dir))
+                logging.warning("Skipping invalid application directory - no service.json exists - {}".format(service_dir))
             else:
                 service_map[dir] = Application(dir)
                 with open(service_definition_file) as service_def:
                     service_definitions = json.load(service_def)
-                    for role, definition in service_definitions.iteritems():
+                    for role, definition in service_definitions.items():
                         if re.match(service_filter or ".*", role):
                             service_map[dir].add_service(
                                 role, Service(app=dir, role=role, definition=definition,
@@ -38,9 +39,9 @@ def application_filter(app_filter, application):
 
 
 def walk_service_map(application_map, application_callback, service_callback):
-    for application, service_map in application_map.iteritems():
+    for application, service_map in application_map.items():
         if application_callback: application_callback(application)
-        for service, service_definition in service_map.iteritems():
+        for service, service_definition in service_map.items():
             if service_callback: service_callback(service_definition)
 
 
@@ -56,7 +57,6 @@ def ensure_app_directory_exists(destination_directory, service_defintion):
 
 
 def ensure_service_directory_exists(destination_directory, service_defintion, create=True):
-    # type: (str, Service) -> object
     app_dir = ensure_app_directory_exists(destination_directory=destination_directory,
                                           service_defintion=service_defintion)
     service_directory = service_defintion.get_service_directory(app_dir=app_dir)

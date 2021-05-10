@@ -2,7 +2,7 @@ import os
 import tempfile
 import unittest
 
-from service_buddy.util import log_handler
+from util import log_handler
 
 DIRNAME = os.path.dirname(os.path.abspath(__file__))
 
@@ -14,7 +14,7 @@ class ParentTestCase(unittest.TestCase):
                 os.remove(_file)
             os.removedirs(self.temp_dir)
         except Exception as e:
-            print 'Error cleaning up ' + e.message
+            print('Error cleaning up ' +str(e))
 
     @classmethod
     def setUpClass(cls):

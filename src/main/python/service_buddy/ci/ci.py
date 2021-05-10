@@ -1,13 +1,18 @@
 import json
-import os
 import logging
-from service_buddy.ci.bamboo_build_creator import BambooBuildCreator
-from service_buddy.ci.travis_build_creator import TravisBuildCreator
+import os
+from typing import Dict, Any
 
-build_system_map = {
-            BambooBuildCreator.get_type(): BambooBuildCreator(),
-            TravisBuildCreator.get_type(): TravisBuildCreator()}
-build_systems = [key for key in build_system_map.iterkeys()]
+from ci.bamboo_build_creator import BambooBuildCreator
+from ci.bitbucket_pipeline_build_creator import BitBucketPipelineBuildCreator
+from ci.travis_build_creator import TravisBuildCreator
+from service.service import Service
+
+build_system_map: Dict[str, Any] = {
+    BambooBuildCreator.get_type(): BambooBuildCreator(),
+    BitBucketPipelineBuildCreator.get_type(): BitBucketPipelineBuildCreator(),
+    TravisBuildCreator.get_type(): TravisBuildCreator()}
+build_systems = [key for key in build_system_map.keys()]
 
 
 class BuildCreator(object):
@@ -24,7 +29,7 @@ class BuildCreator(object):
                 self.always_recreate_builds = defaults.get('build-creation-is-idempotent', True)
                 self.default_config = defaults
         else:
-            logging.warn("Could not local 'build-config.json' in code template directory")
+            logging.warning("Could not local 'build-config.json' in code template directory")
             self.default_provider = "bamboo"
         if self.default_provider not in build_system_map:
             raise Exception("Requested provider is not configured {}".format(self.default_provider))
@@ -38,11 +43,9 @@ class BuildCreator(object):
             )
 
     def _get_default_build_creator(self):
-        # type: () -> BuildCreator
         return build_system_map[self.default_provider]
 
-    def create_project(self, service_definition, app_dir, force_build_creation=False):
-        # type: (Service, str) -> object
+    def create_project(self, service_definition: Service, app_dir: str, force_build_creation: bool = False):
         do_create = not service_definition.repo_exists() or self.always_recreate_builds or force_build_creation
         logging.info(
             '[create project] repo exists: %r, always_recreate: %r, force create: %r do_create: %r',

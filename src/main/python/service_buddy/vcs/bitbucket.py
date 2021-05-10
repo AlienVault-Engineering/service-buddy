@@ -1,13 +1,13 @@
 import logging
 
+import time
 from pybitbucket import repository
 from pybitbucket.auth import BasicAuthenticator
 from pybitbucket.bitbucket import Client
 from pybitbucket.repository import RepositoryPayload, RepositoryForkPolicy
 from requests import HTTPError
-import time
 
-from service_buddy.util.command_util import invoke_process
+from util.command_util import invoke_process
 
 
 class BitbucketVCSProvider(object):
@@ -32,7 +32,7 @@ class BitbucketVCSProvider(object):
                     password,
                     'pybitbucket@mailinator.com'))
         else:
-            logging.warn("VCS username and password not configured - assuming git executable has appropriate "
+            logging.warning("VCS username and password not configured - assuming git executable has appropriate "
                          "authorization for repo checks")
             self.client = None
         self.team_root_user = repo_root

@@ -1,13 +1,13 @@
 import logging
 
-from service_buddy.service.loader import walk_service_map
+from service.loader import walk_service_map
 
 
 def pretty_print_application(app): logging.error(u"{}".format(app))
 
 
 def pretty_print_service(service_definition):
-    logging.warn(u"\t {}".format(service_definition.get_role()))
+    logging.warning(u"\t {}".format(service_definition.get_role()))
     for dat in service_definition:
         secondary_indent = '\t\t' if len(dat) <= 10 else '\t'
         logging.info(u"\t\t {}{}- {}".format(dat, secondary_indent, service_definition[dat]))

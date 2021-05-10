@@ -1,10 +1,8 @@
-import json
+import logging
 import os
 
-import logging
-
-from service_buddy.service.service import Service
-from service_buddy.util.command_util import invoke_process
+from service.service import Service
+from util.command_util import invoke_process
 
 
 class TravisBuildCreator(object):
@@ -36,14 +34,14 @@ class TravisBuildCreator(object):
             build_type = self.build_templates.get(service_definition.get_service_type())['type']
         service_dir = service_definition.get_service_directory(app_dir=app_dir)
         if os.path.exists(self._get_travis_file(service_dir)):
-            logging.warn("travis build file exists - enabling repo")
+            logging.warning("travis build file exists - enabling repo")
             self._invoke_travis([ 'enable'], exec_dir=service_dir)
         else:
             build_template = self.build_configuration.get(build_type,None)
             if build_template:
                 self.create_build(service_dir, build_template,service_definition)
             else:
-                logging.warn("Could not locate build template"
+                logging.warning("Could not locate build template"
                                              " for build type - {}:{}".format(service_definition.get_service_type(),
                                                                               build_type))
 
@@ -85,7 +83,7 @@ class TravisBuildCreator(object):
 
     @staticmethod
     def _append_rendered_arguments(args, install_script, service_definition):
-        if isinstance(install_script, basestring):
+        if isinstance(install_script, str):
             install_script = [install_script]
         for script in install_script:
             if "${" in script:

@@ -1,8 +1,7 @@
 import click
 
-from service_buddy.commandline import cli
-from service_buddy.context.service_context import ServiceContext
-from service_buddy.service.initializer import Initializer
+from commandline import cli
+from service.initializer import Initializer
 
 
 @cli.command(name='init',short_help="Analyze service definitions and initialize any new services.")
@@ -23,7 +22,6 @@ from service_buddy.service.initializer import Initializer
               help='Skip the templating of the source code.')
 @click.pass_obj
 def list_service(service_ctx,code_template_definitions, skip_build_creation, force_build_creation, skip_code_creation,skip_git_creation):
-    # type: (ServiceContext, str,str) -> None
     vcs =service_ctx.vcs
     application_map = service_ctx.application_map
     vcs.validate_repositories(application_map)

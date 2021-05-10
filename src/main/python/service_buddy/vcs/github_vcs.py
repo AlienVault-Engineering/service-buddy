@@ -3,7 +3,7 @@ import logging
 from github import Github
 from requests import HTTPError
 
-from service_buddy.util.command_util import invoke_process
+from util.command_util import invoke_process
 
 
 class GitHubVCSProvider(object):
@@ -24,7 +24,7 @@ class GitHubVCSProvider(object):
         if user and password:
             self.client = Github(user, password).get_organization(self.repo_root)
         else:
-            logging.warn(
+            logging.warning(
                 "VCS username and password not configured - assuming git executable has appropriate authorization for "
                 "repo checks")
             self.client = None
