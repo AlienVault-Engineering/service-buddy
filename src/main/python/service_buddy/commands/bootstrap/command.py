@@ -1,11 +1,11 @@
 import click
 from click import Choice
 
-from ci import ci
-from code.code_creator import CodeCreator
-from commandline import cli
-from service.service import Service
-from vcs import vcs
+from service_buddy.ci import ci
+from service_buddy.codegenerator.code_creator import CodeCreator
+from service_buddy.commandline import cli
+from service_buddy.service.service import Service
+from service_buddy.vcs import vcs
 
 
 @cli.command(name='bootstrap', short_help="Create a repository containing the initial definition for a micro-service "

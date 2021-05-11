@@ -1,6 +1,6 @@
 import logging
 
-from service.loader import walk_service_map
+from service_buddy.service.loader import walk_service_map
 
 
 def pretty_print_application(app): logging.error(u"{}".format(app))

@@ -1,16 +1,15 @@
 import os
 
 import testcase_parent
-from service import loader
-from service.initializer import Initializer
-from service.service import Service
-from vcs.vcs import VCS
+from service_buddy.service import loader
+from service_buddy.service.initializer import Initializer
+from service_buddy.service.service import Service
+from service_buddy.vcs.vcs import VCS
 from testcase_parent import ParentTestCase
 
 
 class InitTestCase(ParentTestCase):
-    def tearDown(self):
-        pass
+
 
     @classmethod
     def setUpClass(cls):

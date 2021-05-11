@@ -1,11 +1,11 @@
 import logging
 
-from ci.ci import BuildCreator
-from code.code_creator import CodeCreator
-from service.loader import safe_mkdir, walk_service_map, \
+from service_buddy.ci.ci import BuildCreatorManager
+from service_buddy.codegenerator.code_creator import CodeCreator
+from service_buddy.service.loader import safe_mkdir, walk_service_map, \
     ensure_app_directory_exists
-from service.service import Service
-from util.pretty_printer import pretty_print_service
+from service_buddy.service.service import Service
+from service_buddy.util.pretty_printer import pretty_print_service
 
 
 class Initializer(object):
@@ -22,8 +22,8 @@ class Initializer(object):
         self.skip_git_creation = skip_git_creation
         self.code_generator = CodeCreator(code_template_directory=code_template_directory,
                                           dry_run=dry_run)
-        self.build_creator = BuildCreator(template_directory=code_template_directory,
-                                          dry_run=dry_run)
+        self.build_creator = BuildCreatorManager(template_directory=code_template_directory,
+                                                 dry_run=dry_run)
         self.dry_run = dry_run
         safe_mkdir(directory=destination_directory)
         self.destination_directory = destination_directory

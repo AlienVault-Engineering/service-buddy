@@ -1,7 +1,7 @@
 import click
 
-from commandline import cli
-from util.pretty_printer import pretty_print_services
+from service_buddy.commandline import cli
+from service_buddy.util.pretty_printer import pretty_print_services
 
 
 @cli.command(name='list', short_help="Print definitions for services.")

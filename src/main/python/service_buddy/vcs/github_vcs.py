@@ -3,7 +3,7 @@ import logging
 from github import Github
 from requests import HTTPError
 
-from util.command_util import invoke_process
+from service_buddy.util.command_util import invoke_process
 
 
 class GitHubVCSProvider(object):

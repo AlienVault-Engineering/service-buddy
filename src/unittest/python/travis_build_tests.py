@@ -2,18 +2,17 @@ import os
 import shutil
 from tempfile import mkdtemp
 
-from ci.ci import BuildCreator
-from ci.travis_build_creator import TravisBuildCreator
-from service import loader
-from service.service import Service
+from service_buddy.ci.ci import BuildCreatorManager
+from service_buddy.ci.travis_build_creator import TravisBuildCreator
+from service_buddy.service import loader
+from service_buddy.service.service import Service
 from testcase_parent import ParentTestCase
 
 DIRNAME = os.path.dirname(os.path.abspath(__file__))
 
 
 class TravisBuildTestCase(ParentTestCase):
-    def tearDown(self):
-        pass
+
 
     @classmethod
     def setUpClass(cls):
@@ -23,7 +22,7 @@ class TravisBuildTestCase(ParentTestCase):
         cls.app_dir = os.path.join(cls.test_resources, "app1")
 
     def test_travis_file_detection(self):
-        build_creator = BuildCreator(dry_run=True, template_directory=self.test_resources)
+        build_creator = BuildCreatorManager(dry_run=True, template_directory=self.test_resources)
         test_service = Service(app="app1", role="service", definition={"service-type": "test"})
         build_creator.create_project(service_definition=test_service, app_dir=self.app_dir)
         self._assertInYaml({"ubar":"Overwrote existing travis.yml"},self.yml_folder)
@@ -47,7 +46,7 @@ class TravisBuildTestCase(ParentTestCase):
         source = os.path.join(self.yml_folder, '.travis.yml')
         destination = os.path.join(temp, '.travis.yml')
         shutil.copy(source, destination)
-        build_creator = BuildCreator(dry_run=True, template_directory=self.test_resources)
+        build_creator = BuildCreatorManager(dry_run=True, template_directory=self.test_resources)
         build_creator._get_default_build_creator()._write_deploy_stanza(temp)
         self._assertInYaml({"deploy":"Cound not find deploy stanza"},temp)
 

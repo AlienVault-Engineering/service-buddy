@@ -1,8 +1,8 @@
 import logging
 import os
 
-from service import loader
-from vcs.vcs import VCS
+from service_buddy.service import loader
+from service_buddy.vcs.vcs import VCS
 
 
 class ServiceContext(object):

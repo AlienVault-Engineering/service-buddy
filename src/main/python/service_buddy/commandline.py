@@ -1,7 +1,7 @@
 import click
 
-from context.service_context import ServiceContext
-from util.log_handler import configure_logging
+from service_buddy.context.service_context import ServiceContext
+from service_buddy.util.log_handler import configure_logging
 
 
 @click.group()
@@ -35,13 +35,13 @@ def cli(ctx, application_filter, service_filter, service_directory, destination_
 
 
 # noinspection PyUnresolvedReferences
-from commands.clone import command
+from service_buddy.commands.clone import command
 # noinspection PyUnresolvedReferences
-from commands.git import command
+from service_buddy.commands.git import command
 # noinspection PyUnresolvedReferences
-from commands.initialize import command
+from service_buddy.commands.initialize import command
 # noinspection PyUnresolvedReferences
-from commands.list import command
+from service_buddy.commands.list import command
 # noinspection PyUnresolvedReferences
-from commands.bootstrap import command
+from service_buddy.commands.bootstrap import command
 

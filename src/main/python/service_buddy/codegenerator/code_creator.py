@@ -2,13 +2,16 @@ import json
 import logging
 import os
 from copy import deepcopy
+from typing import Dict
 
-from code.cookie_cutter_creator import CookeCutterProjectCreator
-from service.service import Service
-from service.service_template_generator import ServiceTemplateGenerator
+from service_buddy.codegenerator.cookie_cutter_creator import CookeCutterProjectCreator
+from service_buddy.service.service import Service
+from service_buddy.service.service_template_generator import ServiceTemplateGenerator
 
 
 class CodeCreator(object):
+    code_creators: Dict[str, CookeCutterProjectCreator]
+
     def __init__(self, code_template_directory, dry_run):
         super(CodeCreator, self).__init__()
         default_path = os.path.join(code_template_directory, "code-template-config.json")
@@ -45,17 +48,14 @@ class CodeCreator(object):
                 ret[key] = value
         return ret
 
-    def _load_service_templates(self, builtIn):
-        # type: (str) -> dict
+    def _load_service_templates(self, builtIn: str) -> dict:
         with open(builtIn) as builtin:
             return json.load(builtin)
 
     def get_default_code_creator(self):
-        # type: () -> CodeCreator
         return self.code_creators[self.default_provider]
 
-    def create_project(self, service_definition, app_dir, extra_config=None):
-        # type: (Service, str) -> None
+    def create_project(self, service_definition: Service, app_dir:str, extra_config:dict=None) -> None:
         project = self.get_default_code_creator().create_project(service_definition=service_definition,
                                                                  app_dir=app_dir,extra_config=extra_config)
         service_type_ = self.templates[service_definition.get_service_type()]

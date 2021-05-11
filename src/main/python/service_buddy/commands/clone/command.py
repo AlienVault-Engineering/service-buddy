@@ -1,6 +1,6 @@
 import click
 
-from commandline import cli
+from service_buddy.commandline import cli
 
 
 @cli.command(name='clone',short_help="Clone all of the existing service definition repos onto the local file system")

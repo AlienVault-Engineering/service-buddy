@@ -1,15 +1,14 @@
 import os
 
-from service import loader
-from util import pretty_printer
+from service_buddy.service import loader
+from service_buddy.util import pretty_printer
 from testcase_parent import ParentTestCase
 
 DIRNAME = os.path.dirname(os.path.abspath(__file__))
 
 
 class ServiceLoadTestCase(ParentTestCase):
-    def tearDown(self):
-        pass
+
 
     @classmethod
     def setUpClass(cls):

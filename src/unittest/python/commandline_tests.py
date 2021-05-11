@@ -5,8 +5,8 @@ import click
 
 from click.testing import CliRunner
 
-from commandline import cli
-from context.service_context import ServiceContext
+from service_buddy.commandline import cli
+from service_buddy.context.service_context import ServiceContext
 from testcase_parent import ParentTestCase
 
 ctx = None
@@ -21,8 +21,7 @@ def test_method(service_ctx):
 
 
 class CommandlineTestCase(ParentTestCase):
-    def tearDown(self):
-        pass
+
 
     @classmethod
     def setUpClass(cls):
@@ -83,47 +82,47 @@ class CommandlineTestCase(ParentTestCase):
         self.assertTrue(os.path.exists(os.path.join(service_dir, 'app')), "Failed to create app directory")
 
 
-def test_list(self):
-    runner = CliRunner()
-    result = runner.invoke(cli, ['--service-directory', self.service_directory, '--dry-run', 'list'])
-    self.assertEqual(result.exit_code, 0, "Failed to run list successfully")
+    def test_list(self):
+        runner = CliRunner()
+        result = runner.invoke(cli, ['--service-directory', self.service_directory, '--dry-run', 'list'])
+        self.assertEqual(result.exit_code, 0, "Failed to run list successfully")
 
 
-def test_clone(self):
-    runner = CliRunner()
-    result = runner.invoke(cli, ['--service-directory',
-                                 self.service_directory,
-                                 '--dry-run',
-                                 '--destination-directory',
-                                 self.temp_dir,
-                                 'clone'
-                                 ])
-    self.assertEqual(result.exit_code, 0, "Failed to run list successfully")
+    def test_clone(self):
+        runner = CliRunner()
+        result = runner.invoke(cli, ['--service-directory',
+                                     self.service_directory,
+                                     '--dry-run',
+                                     '--destination-directory',
+                                     self.temp_dir,
+                                     'clone'
+                                     ])
+        self.assertEqual(result.exit_code, 0, "Failed to run list successfully")
 
 
-def test_git(self):
-    runner = CliRunner()
-    result = runner.invoke(cli, ['--service-directory',
-                                 self.service_directory,
-                                 '--dry-run',
-                                 '--destination-directory',
-                                 self.temp_dir,
-                                 'git',
-                                 "foo"])
-    self.assertEqual(result.exit_code, 0, "Failed to run list successfully")
+    def test_git(self):
+        runner = CliRunner()
+        result = runner.invoke(cli, ['--service-directory',
+                                     self.service_directory,
+                                     '--dry-run',
+                                     '--destination-directory',
+                                     self.temp_dir,
+                                     'git',
+                                     "foo"])
+        self.assertEqual(result.exit_code, 0, "Failed to run list successfully")
 
 
-def test_init(self):
-    runner = CliRunner()
-    result = runner.invoke(cli, [
-        '--service-directory',
-        self.service_directory,
-        '--dry-run',
-        '--destination-directory',
-        self.temp_dir,
-        'init',
-        '--code-template-definitions',
-        self.service_templates_test
-    ]
-                           )
-    self.assertEqual(result.exit_code, 0, "Failed to run list successfully - {}".format(result.output))
+    def test_init(self):
+        runner = CliRunner()
+        result = runner.invoke(cli, [
+            '--service-directory',
+            self.service_directory,
+            '--dry-run',
+            '--destination-directory',
+            self.temp_dir,
+            'init',
+            '--code-template-definitions',
+            self.service_templates_test
+        ]
+                               )
+        self.assertEqual(result.exit_code, 0, "Failed to run list successfully - {}".format(result.output))

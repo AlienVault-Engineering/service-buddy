@@ -7,7 +7,7 @@ from pybitbucket.bitbucket import Client
 from pybitbucket.repository import RepositoryPayload, RepositoryForkPolicy
 from requests import HTTPError
 
-from util.command_util import invoke_process
+from service_buddy.util.command_util import invoke_process
 
 
 class BitbucketVCSProvider(object):

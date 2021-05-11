@@ -1,13 +1,14 @@
 import logging
 from collections import OrderedDict
 
-from ci.build_creator import BuildCreator
-from util.command_util import invoke_process
+from service_buddy.ci.build_creator import BuildCreator
+from service_buddy.util.command_util import invoke_process
 
 
 class BambooBuildCreator(BuildCreator):
 
     def __init__(self):
+        super().__init__()
         self.build_system_url = 'url'
 
     def options(self):
@@ -17,7 +18,9 @@ class BambooBuildCreator(BuildCreator):
         opt_dict['password'] = "Password for authentication when creating builds"
         return opt_dict
 
-    def init(self, dry_run, default_config, build_templates, user=None, password=None):
+    def init(self, dry_run: bool, default_config: dict, build_templates: dict, template_directory: str,
+             user: str = None, password: str = None):
+        super(BambooBuildCreator, self).init(dry_run, default_config, build_templates, template_directory)
         self.dry_run = dry_run
         # use bamboo-url as backup
         self.url = default_config.get(self.build_system_url, default_config.get('bamboo-url', None))

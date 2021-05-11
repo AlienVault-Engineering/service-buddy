@@ -1,5 +1,5 @@
-from service import loader
-from vcs.github_vcs import GitHubVCSProvider
+from service_buddy.service import loader
+from service_buddy.vcs.github_vcs import GitHubVCSProvider
 from testcase_parent import ParentTestCase
 
 
@@ -25,8 +25,7 @@ class RepoReturn(object):
 
 
 class GitHubVCSInitTest(ParentTestCase):
-    def tearDown(self):
-        pass
+
 
     @classmethod
     def setUpClass(cls):

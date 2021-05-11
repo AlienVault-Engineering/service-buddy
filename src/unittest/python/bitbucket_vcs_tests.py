@@ -1,6 +1,6 @@
-from service import loader
+from service_buddy.service import loader
 from testcase_parent import ParentTestCase
-from vcs.bitbucket import BitbucketVCSProvider
+from service_buddy.vcs.bitbucket import BitbucketVCSProvider
 
 
 class TestBitbucketClient(object):
@@ -18,8 +18,7 @@ class RepoReturn(object):
 
 
 class BitbucketVCSInitTest(ParentTestCase):
-    def tearDown(self):
-        pass
+
 
     @classmethod
     def setUpClass(cls):

@@ -9,6 +9,10 @@ use_plugin("python.unittest")
 use_plugin("python.pylint")
 use_plugin("copy_resources")
 use_plugin("python.pycharm")
+
+
+
+name = "service-buddy-too"
 default_task = "publish"
 
 
@@ -26,7 +30,7 @@ def initialize(project):
     project.description = "CLI for managing micro-services"
     project.author = "AlienVault"
     project.license = "Apache 2.0"
-    project.url = "https://github.com/AlienVault-Engineering/service-buddy"
+    project.url = "https://github.com/rspitler/service-buddy"
     project.depends_on_requirements("requirements.txt")
     #Build and test settings
     project.set_property("run_unit_tests_propagate_stdout",True)

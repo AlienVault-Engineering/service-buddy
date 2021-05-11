@@ -3,12 +3,12 @@ import logging
 import os
 from collections import OrderedDict
 
-from service.loader import walk_service_map, safe_mkdir, ensure_app_directory_exists, \
+from service_buddy.service.loader import walk_service_map, safe_mkdir, ensure_app_directory_exists, \
     ensure_service_directory_exists
-from service.service import Service
-from util.command_util import invoke_process
-from vcs.bitbucket import BitbucketVCSProvider
-from vcs.github_vcs import GitHubVCSProvider
+from service_buddy.service.service import Service
+from service_buddy.util.command_util import invoke_process
+from service_buddy.vcs.bitbucket import BitbucketVCSProvider
+from service_buddy.vcs.github_vcs import GitHubVCSProvider
 
 vcs_provider_map = {
     BitbucketVCSProvider.get_type(): BitbucketVCSProvider(),

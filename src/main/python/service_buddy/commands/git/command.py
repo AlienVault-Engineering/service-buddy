@@ -1,7 +1,7 @@
 import click
 
-from commandline import cli
-from context.service_context import ServiceContext
+from service_buddy.commandline import cli
+from service_buddy.context.service_context import ServiceContext
 
 
 @cli.command(name='git', short_help="Run arbitrary git command for each service")

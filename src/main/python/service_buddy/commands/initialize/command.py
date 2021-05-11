@@ -1,7 +1,7 @@
 import click
 
-from commandline import cli
-from service.initializer import Initializer
+from service_buddy.commandline import cli
+from service_buddy.service.initializer import Initializer
 
 
 @cli.command(name='init',short_help="Analyze service definitions and initialize any new services.")

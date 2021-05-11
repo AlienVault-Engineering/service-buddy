@@ -1,16 +1,15 @@
 import os
 
-from service import loader
-from vcs.bitbucket import BitbucketVCSProvider
-from vcs.vcs import VCS, vcs_provider_map
+from service_buddy.service import loader
+from service_buddy.vcs.bitbucket import BitbucketVCSProvider
+from service_buddy.vcs.vcs import VCS, vcs_provider_map
 from testcase_parent import ParentTestCase
 
 DIRNAME = os.path.dirname(os.path.abspath(__file__))
 
 
 class VCSTestCase(ParentTestCase):
-    def tearDown(self):
-        pass
+
 
     @classmethod
     def setUpClass(cls):

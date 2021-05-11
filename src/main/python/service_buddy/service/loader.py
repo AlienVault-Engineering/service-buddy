@@ -4,8 +4,8 @@ import os
 import re
 from collections import defaultdict
 
-from service.application import Application
-from service.service import Service
+from service_buddy.service.application import Application
+from service_buddy.service.service import Service
 
 
 def load_service_definitions(service_directory, app_filter=None, service_filter=None):
