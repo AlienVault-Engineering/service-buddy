@@ -17,8 +17,8 @@ vcs_providers = [key for key in vcs_provider_map.keys()]
 
 options = OrderedDict()
 options['root-user']="Organization name. team name or root user used by vcs provider"
-options['user']="Username for authentication when creating repositories"
-options['password']="Password for authentication when creating repositories"
+options['user']="Username for authentication when creating repositories (leave blank to use ${VCS_USER})"
+options['password']="Password for authentication when creating repositories (leave blank to use ${VCS_PASSWORD})"
 class VCS(object):
     def __init__(self, service_directory, dry_run):
         super(VCS, self).__init__()
