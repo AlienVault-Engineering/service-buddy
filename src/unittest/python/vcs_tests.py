@@ -1,8 +1,8 @@
 import os
 
-from service_buddy.service import loader
-from service_buddy.vcs.bitbucket import BitbucketVCSProvider
-from service_buddy.vcs.vcs import VCS, vcs_provider_map
+from service_buddy_too.service import loader
+from service_buddy_too.vcs.bitbucket import BitbucketVCSProvider
+from service_buddy_too.vcs.vcs import VCS, vcs_provider_map
 from testcase_parent import ParentTestCase
 
 DIRNAME = os.path.dirname(os.path.abspath(__file__))

@@ -2,10 +2,10 @@ import os
 import shutil
 from tempfile import mkdtemp
 
-from service_buddy.ci.ci import BuildCreatorManager
-from service_buddy.ci.travis_build_creator import TravisBuildCreator
-from service_buddy.service import loader
-from service_buddy.service.service import Service
+from service_buddy_too.ci.ci import BuildCreatorManager
+from service_buddy_too.ci.travis_build_creator import TravisBuildCreator
+from service_buddy_too.service import loader
+from service_buddy_too.service.service import Service
 from testcase_parent import ParentTestCase
 
 DIRNAME = os.path.dirname(os.path.abspath(__file__))

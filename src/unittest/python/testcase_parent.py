@@ -3,7 +3,7 @@ import shutil
 import tempfile
 import unittest
 
-from service_buddy.util import log_handler
+from service_buddy_too.util import log_handler
 
 DIRNAME = os.path.dirname(os.path.abspath(__file__))
 

@@ -5,8 +5,8 @@ import click
 
 from click.testing import CliRunner
 
-from service_buddy.commandline import cli
-from service_buddy.context.service_context import ServiceContext
+from service_buddy_too.commandline import cli
+from service_buddy_too.context.service_context import ServiceContext
 from testcase_parent import ParentTestCase
 
 ctx = None

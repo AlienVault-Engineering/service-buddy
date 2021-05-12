@@ -1,10 +1,10 @@
 import os
 
 import testcase_parent
-from service_buddy.service import loader
-from service_buddy.service.initializer import Initializer
-from service_buddy.service.service import Service
-from service_buddy.vcs.vcs import VCS
+from service_buddy_too.service import loader
+from service_buddy_too.service.initializer import Initializer
+from service_buddy_too.service.service import Service
+from service_buddy_too.vcs.vcs import VCS
 from testcase_parent import ParentTestCase
 
 

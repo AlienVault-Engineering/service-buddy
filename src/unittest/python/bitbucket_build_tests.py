@@ -1,7 +1,7 @@
 import os
 
-from service_buddy.ci.ci import BuildCreatorManager
-from service_buddy.service.service import Service
+from service_buddy_too.ci.ci import BuildCreatorManager
+from service_buddy_too.service.service import Service
 from testcase_parent import ParentTestCase
 
 DIRNAME = os.path.dirname(os.path.abspath(__file__))

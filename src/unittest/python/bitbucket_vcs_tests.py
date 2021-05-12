@@ -1,6 +1,6 @@
-from service_buddy.service import loader
+from service_buddy_too.service import loader
 from testcase_parent import ParentTestCase
-from service_buddy.vcs.bitbucket import BitbucketVCSProvider
+from service_buddy_too.vcs.bitbucket import BitbucketVCSProvider
 
 
 class TestBitbucketClient(object):
