@@ -57,9 +57,10 @@ except subprocess.CalledProcessError as e:
 
 try:
     args = ["pyb", "clean", "install_build_dependencies", "package", "-o"]
-    if os.environ.get('TRAVIS_BUILD_NUMBER') is not None:
+    RUN_ID = os.environ.get('GITHUB_RUN_ID', os.environ.get('TRAVIS_BUILD_NUMBER'))
+    if RUN_ID is not None:
         args.append('-P')
-        args.append('build_number=0.1.{}'.format(os.environ.get('TRAVIS_BUILD_NUMBER')))
+        args.append('build_number=0.1.{}'.format(RUN_ID))
     subprocess.check_call(args)
     dist_dir = glob.glob(os.path.join(script_dir, "target", "dist", "*"))[0]
     for src_file in glob.glob(os.path.join(dist_dir, "*")):
