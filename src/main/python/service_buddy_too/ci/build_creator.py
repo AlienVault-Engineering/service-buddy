@@ -48,10 +48,17 @@ class FileBasedBuildCreator(BuildCreator):
         else:
             raise Exception("Unknown build configuration type - {} ", build_configuration['type'])
         extra_context = _make_cookie_safe(service_definition)
+        # allow extra context in build config
+        extra_context.update(_make_cookie_safe(build_configuration))
+        # allow user to specify the directory in the github repo
+        directory= build_configuration.get('directory', None)
         if self.dry_run:
             logging.error("Creating project from template {} ".format(location))
         else:
-            return cookiecutter(location, no_input=True, extra_context=extra_context, output_dir=service_dir)
+            return cookiecutter(location, no_input=True,
+                                extra_context=extra_context,
+                                output_dir=service_dir,
+                                directory=directory)
 
     def _build_exists_action(self, service_dir: str, build_template: dict, service_definition: Service):
         pass

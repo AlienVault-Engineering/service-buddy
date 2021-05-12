@@ -8,7 +8,8 @@
   "build-configuration": {
     "example": {
       "type": "github",
-      "location": "https://github.com/rspitler/bitbucket-build-templates/"
+      "location": "https://github.com/rspitler/bitbucket-build-templates/",
+      "directory": "container"
     }
   }
 }
