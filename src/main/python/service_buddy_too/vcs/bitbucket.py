@@ -69,7 +69,7 @@ class BitbucketVCSProvider(object):
             # See I told you, there is a limitation in the SDK where you can not provide is_private
             # on creation, if you try ot create a public repo in a private project it fails
             repo = self.root_workspace.repositories.create(project_key=service_definition.get_app(),
-                                                           repo_slug=service_definition.get_repository_name())
+                                                           repo_slug=service_definition.get_repository_name().replace('-','_'))
             repo.is_private = True
             repo.description = service_definition.get_description()
             repo.name = service_definition.get_fully_qualified_service_name()
