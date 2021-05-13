@@ -63,7 +63,7 @@ class BitbucketVCSProvider(object):
                 logging.info(f"Creating project for {service_definition.get_app()}")
                 # Have to make not private due to limitation in SDK
                 project = self.root_workspace.projects.create(name=service_definition.get_app(),
-                                                              key=service_definition.get_app(),
+                                                              key=service_definition.get_app().replace('-','_'),
                                                               description=service_definition.get_app(),
                                                               is_private=False)
             # See I told you, there is a limitation in the SDK where you can not provide is_private
