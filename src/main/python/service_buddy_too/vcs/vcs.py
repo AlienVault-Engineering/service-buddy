@@ -2,6 +2,7 @@ import json
 import logging
 import os
 from collections import OrderedDict
+from typing import Dict, Union
 
 from service_buddy_too.service.loader import walk_service_map, safe_mkdir, ensure_app_directory_exists, \
     ensure_service_directory_exists
@@ -10,15 +11,17 @@ from service_buddy_too.util.command_util import invoke_process
 from service_buddy_too.vcs.bitbucket import BitbucketVCSProvider
 from service_buddy_too.vcs.github_vcs import GitHubVCSProvider
 
-vcs_provider_map = {
+vcs_provider_map: Dict[str, Union[BitbucketVCSProvider, GitHubVCSProvider]] = {
     BitbucketVCSProvider.get_type(): BitbucketVCSProvider(),
     GitHubVCSProvider.get_type(): GitHubVCSProvider()}
 vcs_providers = [key for key in vcs_provider_map.keys()]
 
 options = OrderedDict()
-options['root-user']="Organization name. team name or root user used by vcs provider"
-options['user']="Username for authentication when creating repositories (leave blank to use ${VCS_USER})"
-options['password']="Password for authentication when creating repositories (leave blank to use ${VCS_PASSWORD})"
+options['root-user'] = "Organization name. Team name, organization, workspace or root user used by vcs provider"
+options['user'] = "Username for authentication when creating repositories (leave blank to use ${VCS_USER})"
+options['password'] = "Password for authentication when creating repositories (leave blank to use ${VCS_PASSWORD})"
+
+
 class VCS(object):
     def __init__(self, service_directory, dry_run):
         super(VCS, self).__init__()
@@ -33,7 +36,6 @@ class VCS(object):
         else:
             raise Exception("Could not local 'vcs-config.json' in service directory")
         self.dry_run = dry_run
-
 
         if self.default_provider not in vcs_provider_map:
             raise Exception("Requested provider is not configured {}".format(self.default_provider))
@@ -57,6 +59,10 @@ class VCS(object):
 
     def init_repo(self, service_definition, service_dir):
         repo_url = self._get_default_vcs_provider().create_repo(service_definition)
+        self.init_git_for_directory(repo_url, service_dir)
+        service_definition.set_git_url(repo_url)
+
+    def init_git_for_directory(self, repo_url, service_dir):
         args = ['git', 'init']
         invoke_process(args, exec_dir=service_dir, dry_run=self.dry_run)
         args = ['git', 'add', '*', '**/*']
@@ -67,7 +73,6 @@ class VCS(object):
         invoke_process(args, exec_dir=service_dir, dry_run=self.dry_run)
         args = ['git', 'push', '-u', 'origin', 'master']
         invoke_process(args, exec_dir=service_dir, dry_run=self.dry_run)
-        service_definition.set_git_url(repo_url)
 
     def clone_service(self, application_map, destination_directory):
         # type: (dict, str) -> None
@@ -78,7 +83,7 @@ class VCS(object):
             app_dir = ensure_app_directory_exists(destination_directory, service_defintion)
             if service_defintion.repo_exists():
                 clone_url = service_defintion.get_git_url()
-                args = ['git', 'clone', clone_url,service_defintion.get_fully_qualified_service_name()]
+                args = ['git', 'clone', clone_url, service_defintion.get_fully_qualified_service_name()]
                 service_directory = service_defintion.get_service_directory(app_dir=app_dir)
                 if os.path.exists(service_directory):
                     logging.warning("Skipping clone step directory exists - {}".format(service_directory))
@@ -97,7 +102,8 @@ class VCS(object):
                                                               service_defintion=service_defintion,
                                                               create=False)
             if not destination_directory:
-                logging.warning("Service '{}' did not exist in destination directory - {}".format(service_defintion.get_fully_qualified_service_name(),destination_directory))
+                logging.warning("Service '{}' did not exist in destination directory - {}".format(
+                    service_defintion.get_fully_qualified_service_name(), destination_directory))
                 logging.warning("Skipping running git command - git {}".format(str(args)))
                 return
             logging.warning("Invoking git in directory - '{}' ".format(destination_dir))

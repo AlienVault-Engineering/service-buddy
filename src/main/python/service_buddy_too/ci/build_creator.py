@@ -46,7 +46,7 @@ class FileBasedBuildCreator(BuildCreator):
         elif build_configuration['type'] == 'github':
             location = build_configuration['location']
         else:
-            raise Exception("Unknown build configuration type - {} ", build_configuration['type'])
+            raise Exception(f"Unknown build configuration type - {build_configuration['type']} ",)
         extra_context = _make_cookie_safe(service_definition)
         # allow extra context in build config
         extra_context.update(_make_cookie_safe(build_configuration))
@@ -77,7 +77,7 @@ class FileBasedBuildCreator(BuildCreator):
         build_template = self.build_configuration.get(build_type, None)
         if build_template:
             if os.path.exists(self._get_build_file(service_dir)):
-                logging.warning("Build file already exists {}", self._get_build_file(service_dir))
+                logging.warning(f"Build file already exists {self._get_build_file(service_dir)}" )
                 self._build_exists_action(service_dir,build_template, service_definition)
                 invoke_process(['git', 'checkout', os.path.basename(self._get_build_file(service_dir))],
                                exec_dir=service_dir, dry_run=self.dry_run)
@@ -97,4 +97,4 @@ class FileBasedBuildCreator(BuildCreator):
                                                              build_type))
 
     def _create_script_build(self, service_dir: str, build_configuration: dict, service_definition: Service):
-        raise Exception('Script build not supported for this build creator - {}', self.get_type())
+        raise Exception(f'Script build not supported for this build creator - {self.get_type()}' )
