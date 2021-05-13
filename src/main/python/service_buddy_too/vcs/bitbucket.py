@@ -58,17 +58,18 @@ class BitbucketVCSProvider(object):
         else:
             if self.root_workspace is None:
                 raise Exception("VCS pass required for create repo operation")
-            project = self.root_workspace.projects.exists(service_definition.get_app())
+            project_key = service_definition.get_app().replace('-', '_')
+            project = self.root_workspace.projects.exists(project_key)
             if not project:
                 logging.info(f"Creating project for {service_definition.get_app()}")
                 # Have to make not private due to limitation in SDK
                 project = self.root_workspace.projects.create(name=service_definition.get_app(),
-                                                              key=service_definition.get_app().replace('-','_'),
+                                                              key=project_key,
                                                               description=service_definition.get_app(),
                                                               is_private=False)
             # See I told you, there is a limitation in the SDK where you can not provide is_private
             # on creation, if you try ot create a public repo in a private project it fails
-            repo = self.root_workspace.repositories.create(project_key=service_definition.get_app(),
+            repo = self.root_workspace.repositories.create(project_key=project_key,
                                                            repo_slug=service_definition.get_repository_name().replace('-','_'))
             repo.is_private = True
             repo.description = service_definition.get_description()
