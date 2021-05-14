@@ -43,7 +43,7 @@ class BitbucketVCSProvider(object):
             )
             exists = result == 0
         if not exists:
-            logging.info(f"Could not find repository -{service_definition.get_repository_name()}")
+            logging.info(f"Could not find repository - {service_definition.get_repository_name()}")
             bitbucket_url = None
         return bitbucket_url
 
