@@ -60,16 +60,19 @@ class VCS(object):
     def init_repo(self, service_definition, service_dir):
         repo_url = self._get_default_vcs_provider().create_repo(service_definition)
         self.init_git_for_directory(repo_url, service_dir)
+        self.perform_initial_commit(service_dir)
         service_definition.set_git_url(repo_url)
 
     def init_git_for_directory(self, repo_url, service_dir):
         args = ['git', 'init']
         invoke_process(args, exec_dir=service_dir, dry_run=self.dry_run)
+        args = ['git', 'remote', 'add', 'origin', repo_url]
+        invoke_process(args, exec_dir=service_dir, dry_run=self.dry_run)
+
+    def perform_initial_commit(self, service_dir):
         args = ['git', 'add', '*', '**/*']
         invoke_process(args, exec_dir=service_dir, dry_run=self.dry_run)
         args = ['git', 'commit', '-m', 'Initial commit']
-        invoke_process(args, exec_dir=service_dir, dry_run=self.dry_run)
-        args = ['git', 'remote', 'add', 'origin', repo_url]
         invoke_process(args, exec_dir=service_dir, dry_run=self.dry_run)
         args = ['git', 'push', '-u', 'origin', 'master']
         invoke_process(args, exec_dir=service_dir, dry_run=self.dry_run)
