@@ -79,10 +79,7 @@ class FileBasedBuildCreator(BuildCreator):
             repo_url = service_definition.get_git_url()
             if not repo_url: raise Exception("Service definition not validated before use in build creation")
             git_init = [
-                ['git', 'init'],
-                ['git', 'remote', 'add', 'origin', repo_url],
-                ['git', 'branch', '--set-upstream-to=origin/master', 'master'],
-                ['git','pull']
+                ['git', 'clone', repo_url]
             ]
             logging.info(f"Configuring git for local modification - {repo_url}")
             for command in git_init:
