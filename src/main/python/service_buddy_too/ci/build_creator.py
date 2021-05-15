@@ -81,6 +81,7 @@ class FileBasedBuildCreator(BuildCreator):
             git_init = [
                 ['git', 'init'],
                 ['git', 'remote', 'add', 'origin', repo_url],
+                ['git', 'branch', 'add', '--set-upstream-to=origin/master', 'master'],
                 ['git','pull']
             ]
             logging.info(f"Configuring git for local modification - {repo_url}")
