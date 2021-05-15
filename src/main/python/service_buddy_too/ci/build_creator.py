@@ -76,14 +76,7 @@ class FileBasedBuildCreator(BuildCreator):
         service_dir = service_definition.get_service_directory(app_dir=app_dir)
         build_template = self.build_configuration.get(build_type, None)
         if build_template:
-            repo_url = service_definition.get_git_url()
-            if not repo_url: raise Exception("Service definition not validated before use in build creation")
-            git_init = [
-                ['git', 'clone', repo_url]
-            ]
-            logging.info(f"Configuring git for local modification - {repo_url}")
-            for command in git_init:
-                invoke_process(command, exec_dir=service_dir, dry_run=self.dry_run)
+            self.prep_git(service_definition, service_dir)
             if os.path.exists(self._get_build_file(service_dir)):
                 logging.warning(f"Build file already exists {self._get_build_file(service_dir)}" )
                 self._build_exists_action(service_dir, build_template, service_definition)
@@ -105,6 +98,16 @@ class FileBasedBuildCreator(BuildCreator):
             logging.warning("Could not locate build template"
                             " for build type - {}:{}".format(service_definition.get_service_type(),
                                                              build_type))
+
+    def prep_git(self, service_definition, service_dir):
+        repo_url = service_definition.get_git_url()
+        if not repo_url: raise Exception("Service definition not validated before use in build creation")
+        # test if git exists
+        if os.path.exists(os.path.join(service_dir,'.git')): return
+        # clone in parent dir
+        logging.info(f"Cloning repo from git for local modification - {repo_url}")
+        pardir = os.path.pardir(service_dir)
+        invoke_process([['git', 'clone', repo_url]], exec_dir=pardir, dry_run=self.dry_run)
 
     def _create_script_build(self, service_dir: str, build_configuration: dict, service_definition: Service):
         raise Exception(f'Script build not supported for this build creator - {self.get_type()}' )
