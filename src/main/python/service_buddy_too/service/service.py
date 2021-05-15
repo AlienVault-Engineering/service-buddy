@@ -55,7 +55,9 @@ class Service(dict):
         return self.app_ref.get_contract_test_git_url()
 
     def get_service_directory(self,app_dir):
-        return os.path.join(app_dir,self.get_fully_qualified_service_name())
+        join = os.path.join(app_dir, self.get_fully_qualified_service_name())
+        os.makedirs(join)
+        return join
 
     def set_service_type(self, param):
         self[SERVICE_TYPE] = param
