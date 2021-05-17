@@ -6,6 +6,7 @@ from cookiecutter.main import cookiecutter
 
 from service_buddy_too.codegenerator.cookie_cutter_creator import _make_cookie_safe
 from service_buddy_too.service.service import Service
+from service_buddy_too.util import command_util
 from service_buddy_too.util.command_util import invoke_process
 
 
@@ -16,19 +17,17 @@ class BuildCreator(object):
         return None
 
     def __init__(self):
-        self.dry_run: bool = False
         self.build_templates: Dict = {}
         self.build_configuration: Dict = {}
         self.template_directory: str = ""
 
-    def init(self, dry_run: bool, default_config: dict, build_templates: dict, template_directory: str,
+    def init(self, default_config: dict, build_templates: dict, template_directory: str,
              user: str = None, password: str = None):
-        self.dry_run = dry_run
         self.build_templates = build_templates
         self.template_directory = template_directory
         self.build_configuration = default_config.get('build-configuration', {})
 
-    def create_project(self, service_definition: Service, app_dir: str):
+    def create_project(self, service_definition: Service):
         pass
 
     def options(self):
@@ -52,7 +51,7 @@ class FileBasedBuildCreator(BuildCreator):
         extra_context.update(_make_cookie_safe(build_configuration))
         # allow user to specify the directory in the github repo
         directory= build_configuration.get('directory', None)
-        if self.dry_run:
+        if command_util.dry_run_global:
             logging.error("Creating project from template {} ".format(location))
         else:
             return cookiecutter(location, no_input=True,
@@ -66,17 +65,17 @@ class FileBasedBuildCreator(BuildCreator):
     def _get_build_file(self, service_dir: str) -> str:
         pass
 
-    def create_project(self, service_definition: Service, app_dir: str):
+    def create_project(self, service_definition: Service):
         pass
         if service_definition.get_service_type() not in self.build_templates:
             raise Exception(
                 "Build template not found for service type {}".format(service_definition.get_service_type()))
         else:
             build_type = self.build_templates.get(service_definition.get_service_type())['type']
-        service_dir = service_definition.get_service_directory(app_dir=app_dir)
+        service_dir = service_definition.get_service_directory()
         build_template = self.build_configuration.get(build_type, None)
         if build_template:
-            self.prep_git(service_definition, service_dir)
+            service_definition.prep_git()
             if os.path.exists(self._get_build_file(service_dir)):
                 logging.warning(f"Build file already exists {self._get_build_file(service_dir)}" )
                 self._build_exists_action(service_dir, build_template, service_definition)
@@ -93,21 +92,12 @@ class FileBasedBuildCreator(BuildCreator):
                     ['git', 'push', '-u', 'origin', 'master']
                 ]
             for command in git_commands:
-                invoke_process(command, exec_dir=service_dir, dry_run=self.dry_run)
+                invoke_process(command, exec_dir=service_dir)
         else:
             logging.warning("Could not locate build template"
                             " for build type - {}:{}".format(service_definition.get_service_type(),
                                                              build_type))
 
-    def prep_git(self, service_definition, service_dir):
-        repo_url = service_definition.get_git_url()
-        if not repo_url: raise Exception("Service definition not validated before use in build creation")
-        # test if git exists
-        if os.path.exists(os.path.join(service_dir,'.git')): return
-        # clone in parent dir
-        pardir = os.path.relpath(os.path.join(service_dir, os.path.pardir))
-        logging.info(f"Cloning repo from git for local modification - {repo_url} - {pardir}")
-        invoke_process([['git', 'clone', repo_url]], exec_dir=pardir, dry_run=self.dry_run)
 
     def _create_script_build(self, service_dir: str, build_configuration: dict, service_definition: Service):
         raise Exception(f'Script build not supported for this build creator - {self.get_type()}' )

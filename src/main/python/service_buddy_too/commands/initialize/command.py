@@ -27,7 +27,6 @@ def list_service(service_ctx,code_template_definitions, skip_build_creation, for
     vcs.validate_repositories(application_map)
     init = Initializer(vcs=vcs,
                        destination_directory=service_ctx.destination_directory,
-                       dry_run=service_ctx.dry_run,
                        code_template_directory=code_template_definitions,
                        skip_code_creation=skip_code_creation,
                        skip_build_creation=skip_build_creation,

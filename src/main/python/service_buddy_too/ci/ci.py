@@ -56,7 +56,7 @@ class BuildCreatorManager(object):
 
     }
 
-    def __init__(self, template_directory, dry_run):
+    def __init__(self, template_directory):
         super(BuildCreatorManager, self).__init__()
         default_path = os.path.join(template_directory, "build-config.json")
         if os.path.exists(default_path):
@@ -77,7 +77,6 @@ class BuildCreatorManager(object):
         else:
             creator = self._get_default_build_creator()
             creator.init(
-                dry_run=dry_run,
                 default_config=self.default_config,
                 build_templates=self.build_templates,
                 template_directory=template_directory,
@@ -87,7 +86,7 @@ class BuildCreatorManager(object):
     def _get_default_build_creator(self):
         return build_system_map[self.default_provider]
 
-    def create_project(self, service_definition: Service, app_dir: str, force_build_creation: bool = False):
+    def create_project(self, service_definition: Service, force_build_creation: bool = False):
         do_create = not service_definition.repo_exists() or self.always_recreate_builds or force_build_creation
         logging.info(
             '[create project] repo exists: %r, always_recreate: %r, force create: %r do_create: %r',
@@ -95,6 +94,5 @@ class BuildCreatorManager(object):
         )
         if do_create:
             return self._get_default_build_creator().create_project(
-                service_definition=service_definition,
-                app_dir=app_dir
+                service_definition=service_definition
             )

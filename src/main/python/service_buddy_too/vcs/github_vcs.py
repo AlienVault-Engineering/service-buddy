@@ -3,6 +3,7 @@ import logging
 from github import Github
 from requests import HTTPError
 
+from service_buddy_too.util import command_util
 from service_buddy_too.util.command_util import invoke_process
 
 
@@ -15,12 +16,10 @@ class GitHubVCSProvider(object):
     def __init__(self, ):
         super(GitHubVCSProvider, self).__init__()
         self.repo_root = ""
-        self.dry_run = ""
         self.client = None
 
-    def init(self, user, password, repo_root, dry_run):
+    def init(self, user, password, repo_root):
         self.repo_root = repo_root
-        self.dry_run = dry_run
         if user and password:
             self.client = Github(user, password).get_organization(self.repo_root)
         else:
@@ -39,9 +38,8 @@ class GitHubVCSProvider(object):
                         ssh_url = repo.ssh_url
                         break
             else:
-                ssh_url = 'ssh://git@github.com/{}'.format(fq_repository_name)
-                result = invoke_process(args=['git', 'ls-remote', ssh_url, '>', '/dev/null'], exec_dir=None,
-                                        dry_run=self.dry_run)
+                ssh_url = 'https://git@github.com/{}.git'.format(fq_repository_name)
+                result = invoke_process(args=['git', 'ls-remote', ssh_url, '>', '/dev/null'], exec_dir=None)
                 if result != 0:
                     logging.info("Could not find repository with git executable - {}".format(
                         service_definition.get_repository_name()))
@@ -66,7 +64,7 @@ class GitHubVCSProvider(object):
             "has_projects": False,
             "has_wiki": False
         }
-        if self.dry_run:
+        if command_util.dry_run_global:
             logging.error("Creating repo {}".format(str(payload)))
         else:
             if self.client is None:

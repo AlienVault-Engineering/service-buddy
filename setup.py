@@ -56,7 +56,7 @@ except subprocess.CalledProcessError as e:
         sys.exit(e.returncode)
 
 try:
-    args = ["pyb", "clean", "install_build_dependencies", "package", "-o"]
+    args = ["pyb", "clean", "install_build_dependencies", "package", "publish", "-o"]
     RUN_ID = os.environ.get('GITHUB_RUN_ID', os.environ.get('TRAVIS_BUILD_NUMBER'))
     if RUN_ID is not None:
         args.append('-P')

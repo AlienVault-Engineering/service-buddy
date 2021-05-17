@@ -9,10 +9,10 @@ from service_buddy_too.service.loader import safe_mkdir
 
 
 class ServiceTemplateGenerator(object):
-    def create_project(self, service_definition, app_dir, service_type=None):
+    def create_project(self, service_definition, service_type=None):
         if not service_type:
             service_type = service_definition.get_service_type()
-        service_def_folder = os.path.join(service_definition.get_service_directory(app_dir), "service")
+        service_def_folder = os.path.join(service_definition.get_service_directory(), "service")
         safe_mkdir(service_def_folder)
         gen_service.do_command(DeployContext.create_deploy_context(
             application=service_definition.get_app(),

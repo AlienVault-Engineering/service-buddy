@@ -7,4 +7,4 @@ from service_buddy_too.commandline import cli
 @click.pass_obj
 def git_clone(service_ctx):
     service_ctx.vcs.validate_repositories(service_ctx.application_map)
-    service_ctx.vcs.clone_service(service_ctx.application_map, service_ctx.destination_directory)
+    service_ctx.vcs.clone_service(service_ctx.application_map)

@@ -18,10 +18,9 @@ class BambooBuildCreator(BuildCreator):
         opt_dict['password'] = "Password for authentication when creating builds"
         return opt_dict
 
-    def init(self, dry_run: bool, default_config: dict, build_templates: dict, template_directory: str,
+    def init(self, default_config: dict, build_templates: dict, template_directory: str,
              user: str = None, password: str = None):
-        super(BambooBuildCreator, self).init(dry_run, default_config, build_templates, template_directory)
-        self.dry_run = dry_run
+        super(BambooBuildCreator, self).init( default_config, build_templates, template_directory)
         # use bamboo-url as backup
         self.url = default_config.get(self.build_system_url, default_config.get('bamboo-url', None))
         self.build_templates = build_templates
@@ -31,7 +30,7 @@ class BambooBuildCreator(BuildCreator):
                 cred_file.writelines('password={}'.format(password))
                 cred_file.flush()
 
-    def create_project(self, service_definition, app_dir):
+    def create_project(self, service_definition):
         logging.info("Creating bamboo build")
         if service_definition.get_service_type() not in self.build_templates:
             raise Exception(
@@ -49,7 +48,7 @@ class BambooBuildCreator(BuildCreator):
             '--role', service_definition.get_role()
         ]
 
-        res = invoke_process(args, dry_run=self.dry_run)
+        res = invoke_process(args)
         if res > 0:
             raise Exception("Error creating bamboo build")
         else:

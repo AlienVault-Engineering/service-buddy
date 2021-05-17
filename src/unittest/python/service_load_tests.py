@@ -26,7 +26,9 @@ class ServiceLoadTestCase(ParentTestCase):
         pretty_printer.pretty_print_services(application_map)
 
     def test_app_filter(self):
-        application_map = loader.load_service_definitions(self.service_directory, 'app1')
+        application_map = loader.load_service_definitions(self.service_directory,
+                                                          code_directory=self.temp_dir,
+                                                          app_filter='app1')
         self.assertEqual(1, len(application_map), "Did not load only app1")
         app1 = application_map['app1']
         self.assertEqual(4, len(app1), "Did not load all services for app1")
@@ -38,4 +40,3 @@ class ServiceLoadTestCase(ParentTestCase):
             self.assertTrue(value.get_description() is not None, "Did not load service description for {}".format(key))
             self.assertTrue(value.get_repository_name() is not None, "Did not load service repo name for {}".format(key))
             self.assertTrue(value.repo_exists() is ("exists" in key), "Did not give rational response {}".format(key))
-            self.assertTrue(value.get_contract_test_git_url() is None, "Did not get git url as expected")

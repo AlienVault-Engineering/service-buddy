@@ -1,13 +1,14 @@
 import click
 
 from service_buddy_too.context.service_context import ServiceContext
+from service_buddy_too.util import command_util
 from service_buddy_too.util.log_handler import configure_logging
 
 
 @click.group()
 @click.option("--application-filter", envvar='FILTER', help='Constrain command to operate on applications'
                                                             ' that match the passed filter')
-@click.option("--service-filter", envvar='SERVICE_FILTER', help='Constrain command to operate on services'
+@click.option("--service-filter", envvar='SERVICE_FILTER',default=".*", help='Constrain command to operate on services'
                                                             ' that match the passed filter')
 @click.option("--service-directory", envvar='SERVICE_DIRECTORY', type=click.Path(),
               default="./services",
@@ -25,12 +26,12 @@ def cli(ctx, application_filter, service_filter, service_directory, destination_
     CLI for managing the repositories and build pipeline in a micro-service architecture..
     """
     configure_logging(verbose)
+    command_util.dry_run_global = dry_run
     ctx.obj = ServiceContext(
         filter_string=application_filter,
         service_filter_string=service_filter,
         service_directory=service_directory,
-        destination_directory=destination_directory,
-        dry_run=dry_run
+        destination_directory=destination_directory
     )
 
 

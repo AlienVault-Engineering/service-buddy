@@ -1,3 +1,4 @@
+import os
 from unittest.mock import Mock
 
 from service_buddy_too.service import loader
@@ -25,7 +26,7 @@ class BitbucketVCSInitTest(ParentTestCase):
     def setUpClass(cls):
         super(BitbucketVCSInitTest, cls).setUpClass()
         cls.vcs = BitbucketVCSProvider()
-        cls.vcs.init(None, None, "Test", False)
+        cls.vcs.init(os.environ.get("BB_VCS_USER"), os.environ.get("BB_VCS_PASS"), "Test")
         cls.vcs.root_workspace = Mock()
 
     def validate_exists(self, service_definition):
@@ -37,13 +38,12 @@ class BitbucketVCSInitTest(ParentTestCase):
         self.assertIsNotNone(repo, "Failed to create repo")
 
     def test_repo_exists(self):
-        application_map = loader.load_service_definitions(self.service_directory)
+        application_map = loader.load_service_definitions(self.service_directory,code_directory=self.temp_dir)
         loader.walk_service_map(application_map, application_callback=None, service_callback=self.validate_exists)
         self.vcs.client = None
-        self.vcs.dry_run = True
         loader.walk_service_map(application_map, application_callback=None, service_callback=self.validate_exists)
         self.vcs.client = "TestClient"
 
     def test_repo_create(self):
-        application_map = loader.load_service_definitions(self.service_directory)
+        application_map = loader.load_service_definitions(self.service_directory,code_directory=self.temp_dir)
         loader.walk_service_map(application_map, application_callback=None, service_callback=self.validate_create)

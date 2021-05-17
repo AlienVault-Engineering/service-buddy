@@ -1,7 +1,9 @@
 import os
 
 from service_buddy_too.ci.ci import BuildCreatorManager
+from service_buddy_too.service.application import Application
 from service_buddy_too.service.service import Service
+from service_buddy_too.util import command_util
 from testcase_parent import ParentTestCase
 
 DIRNAME = os.path.dirname(os.path.abspath(__file__))
@@ -19,23 +21,28 @@ class BitbucketBuildTestCase(ParentTestCase):
         cls.app_dir = os.path.join(cls.test_resources, "app1")
 
     def test_bitbucket_build_creation(self):
-        build_creator = BuildCreatorManager(dry_run=False, template_directory=self.test_resources)
-        test_service = Service(app="app1", role="service", definition={"service-type": "test"})
-        build_creator.create_project(
-                          service_definition=test_service,
-                          app_dir=self.temp_dir)
-        listdir = os.listdir(self.temp_dir)
+        command_util.dry_run_global = False
+        build_creator = BuildCreatorManager(template_directory=self.test_resources)
+        test_service = Service(app="app1",
+                               role="service",
+                               definition={"service-type": "test"},
+                               app_reference=Application("app1",self.temp_dir))
+        test_service.set_git_url("git@github.com:rspitler/service-buddy-tests.git")
+        build_creator.create_project(service_definition=test_service)
+        listdir = os.listdir(os.path.join(self.temp_dir,'app1'))
         self.assertTrue('app1-service' in listdir, "Failed to find app dir")
-        listdir = os.listdir(os.path.join(self.temp_dir, 'app1-service'))
+        listdir = os.listdir(os.path.join(self.temp_dir, 'app1/app1-service'))
         self.assertTrue('bitbucket-pipelines.yml' in listdir,"Failed to find build file")
 
     def test_bitbucket_failure(self):
-        build_creator = BuildCreatorManager(dry_run=True, template_directory=self.test_bad_resources)
-        test_service = Service(app="app1", role="service", definition={"service-type": "test"})
+        command_util.dry_run_global = True
+        build_creator = BuildCreatorManager(template_directory=self.test_bad_resources)
+        test_service = Service(app="app1", role="service",
+                               definition={"service-type": "test"},
+                               app_reference=Application("app1",self.temp_dir))
         self.assertRaises(Exception,
                           build_creator.create_project,
-                          service_definition=test_service,
-                          app_dir=self.app_dir)
+                          service_definition=test_service)
 
     def _assertInList(self, param, line_list, error_message):
         for line in line_list:

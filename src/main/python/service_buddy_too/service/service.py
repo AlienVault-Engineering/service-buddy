@@ -1,4 +1,8 @@
+import logging
 import os
+
+from service_buddy_too.service.application import Application
+from service_buddy_too.util.command_util import invoke_process
 
 REPO_URL = 'repository_url'
 
@@ -13,7 +17,7 @@ SERVICE_TYPE = 'service-type'
 
 
 class Service(dict):
-    def __init__(self, app, role, definition, app_reference=None):
+    def __init__(self, app:str, role:str, definition:dict, app_reference:Application):
         super(Service, self).__init__()
         self.update(definition)
         self.app_ref = app_reference
@@ -51,13 +55,36 @@ class Service(dict):
     def get_git_url(self):
         return self.get(REPO_URL,None)
 
-    def get_contract_test_git_url(self):
-        return self.app_ref.get_contract_test_git_url()
-
-    def get_service_directory(self,app_dir):
-        join = os.path.join(app_dir, self.get_fully_qualified_service_name())
-        os.makedirs(join)
+    def get_service_directory(self):
+        join = os.path.join(self.get_parent_dir(), self.get_fully_qualified_service_name())
+        os.makedirs(join, exist_ok=True)
         return join
+
+    def get_parent_dir(self):
+        directory = self.app_ref.get_app_code_directory()
+        os.makedirs(directory, exist_ok=True)
+        return directory
+
+    def is_service_directory_configured_for_git(self) -> bool:
+        service_dir = self.get_service_directory()
+        return '.git' in os.listdir(service_dir)
 
     def set_service_type(self, param):
         self[SERVICE_TYPE] = param
+
+    def prep_git(self):
+        # test if git exists
+        if self.is_service_directory_configured_for_git(): return
+        self.clone_repo()
+
+    def clone_repo(self):
+        if not  self.repo_exists(): raise Exception("Repository URL not configured before calling prep_git")
+        repo_url = self.get_git_url()
+        args = ['git', 'clone', repo_url, self.get_fully_qualified_service_name()]
+        service_directory = self.get_service_directory()
+        if os.path.exists(service_directory):
+            logging.warning("Skipping clone step directory exists - {}".format(service_directory))
+        else:
+            parent_dir = self.get_parent_dir()
+            logging.info(f"Cloning repo from git for local modification - {repo_url} - {parent_dir}")
+            invoke_process(args, parent_dir)

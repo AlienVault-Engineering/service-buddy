@@ -4,8 +4,7 @@ import os
 from collections import OrderedDict
 from typing import Dict, Union
 
-from service_buddy_too.service.loader import walk_service_map, safe_mkdir, ensure_app_directory_exists, \
-    ensure_service_directory_exists
+from service_buddy_too.service.loader import walk_service_map
 from service_buddy_too.service.service import Service
 from service_buddy_too.util.command_util import invoke_process
 from service_buddy_too.vcs.bitbucket import BitbucketVCSProvider
@@ -23,7 +22,7 @@ options['password'] = "Password for authentication when creating repositories (l
 
 
 class VCS(object):
-    def __init__(self, service_directory, dry_run):
+    def __init__(self, service_directory):
         super(VCS, self).__init__()
         default_path = os.path.join(service_directory, "vcs-config.json")
         if os.path.exists(default_path):
@@ -35,12 +34,10 @@ class VCS(object):
                 self.password = defaults.get('password', os.environ.get('VCS_PASSWORD'))
         else:
             raise Exception("Could not local 'vcs-config.json' in service directory")
-        self.dry_run = dry_run
-
         if self.default_provider not in vcs_provider_map:
             raise Exception("Requested provider is not configured {}".format(self.default_provider))
         else:
-            self._get_default_vcs_provider().init(self.user, self.password, self.repo_root, dry_run)
+            self._get_default_vcs_provider().init(self.user, self.password, self.repo_root)
 
     def _get_default_vcs_provider(self):
         return vcs_provider_map[self.default_provider]
@@ -55,43 +52,32 @@ class VCS(object):
 
     def create_project(self, service_definition, app_dir):
         return self.init_repo(service_definition=service_definition,
-                              service_dir=service_definition.get_service_directory(app_dir))
+                              service_dir=service_definition.get_service_directory())
 
-    def init_repo(self, service_definition, service_dir):
+    def init_repo(self, service_definition:Service):
         repo_url = self._get_default_vcs_provider().create_repo(service_definition)
-        self.init_git_for_directory(repo_url, service_dir)
-        self.perform_initial_commit(service_dir)
+        self.init_git_for_directory(repo_url, service_definition.get_service_directory())
+        self.perform_initial_commit(service_definition.get_service_directory())
         service_definition.set_git_url(repo_url)
 
     def init_git_for_directory(self, repo_url, service_dir):
         args = ['git', 'init']
-        invoke_process(args, exec_dir=service_dir, dry_run=self.dry_run)
+        invoke_process(args, exec_dir=service_dir)
         args = ['git', 'remote', 'add', 'origin', repo_url]
-        invoke_process(args, exec_dir=service_dir, dry_run=self.dry_run)
+        invoke_process(args, exec_dir=service_dir)
 
     def perform_initial_commit(self, service_dir):
         args = ['git', 'add', '*', '**/*']
-        invoke_process(args, exec_dir=service_dir, dry_run=self.dry_run)
+        invoke_process(args, exec_dir=service_dir)
         args = ['git', 'commit', '-m', 'Initial commit']
-        invoke_process(args, exec_dir=service_dir, dry_run=self.dry_run)
+        invoke_process(args, exec_dir=service_dir)
         args = ['git', 'push', '-u', 'origin', 'master']
-        invoke_process(args, exec_dir=service_dir, dry_run=self.dry_run)
+        invoke_process(args, exec_dir=service_dir)
 
-    def clone_service(self, application_map, destination_directory):
-        # type: (dict, str) -> None
-        safe_mkdir(destination_directory)
+    def clone_service(self, application_map):
 
-        def clone_repository(service_defintion):
-            # type: (Service) -> None
-            app_dir = ensure_app_directory_exists(destination_directory, service_defintion)
-            if service_defintion.repo_exists():
-                clone_url = service_defintion.get_git_url()
-                args = ['git', 'clone', clone_url, service_defintion.get_fully_qualified_service_name()]
-                service_directory = service_defintion.get_service_directory(app_dir=app_dir)
-                if os.path.exists(service_directory):
-                    logging.warning("Skipping clone step directory exists - {}".format(service_directory))
-                else:
-                    invoke_process(args, app_dir, self.dry_run)
+        def clone_repository(service_defintion:Service):
+            service_defintion.clone_repo()
 
         walk_service_map(application_map=application_map, application_callback=None,
                          service_callback=clone_repository)
@@ -101,9 +87,7 @@ class VCS(object):
 
         def git_exec(service_defintion):
             # type: (Service) -> None
-            destination_dir = ensure_service_directory_exists(destination_directory=destination_directory,
-                                                              service_defintion=service_defintion,
-                                                              create=False)
+            destination_dir = service_defintion.get_service_directory()
             if not destination_directory:
                 logging.warning("Service '{}' did not exist in destination directory - {}".format(
                     service_defintion.get_fully_qualified_service_name(), destination_directory))
@@ -112,7 +96,7 @@ class VCS(object):
             logging.warning("Invoking git in directory - '{}' ".format(destination_dir))
             git_args = ['git']
             git_args.extend(args)
-            invoke_process(git_args, destination_dir, self.dry_run)
+            invoke_process(git_args, destination_dir)
 
         walk_service_map(application_map=application_map, application_callback=None,
                          service_callback=git_exec)

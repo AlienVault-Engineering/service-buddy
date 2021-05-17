@@ -10,9 +10,9 @@ class TravisBuildCreator(FileBasedBuildCreator):
     def options(self):
         return {}
 
-    def init(self, dry_run: bool, default_config: dict, build_templates: dict, template_directory: str,
+    def init(self,  default_config: dict, build_templates: dict, template_directory: str,
              user: str = None, password: str = None):
-        super(TravisBuildCreator, self).init(dry_run, default_config, build_templates, template_directory)
+        super(TravisBuildCreator, self).init( default_config, build_templates, template_directory)
         self.use_org = default_config.get("use-travis-open-source", True)
         self.gh_token = default_config.get('github-token', os.environ.get('GITHUB_TOKEN', ''))
         self.pypi_user = default_config.get('pypi-user', os.environ.get('PYPI_USER'))
@@ -89,6 +89,6 @@ class TravisBuildCreator(FileBasedBuildCreator):
         base_args.extend(self.default_args)
         if append_org: base_args.append('--org' if self.use_org else '--pro')
         if exec_dir:
-            return invoke_process(args=base_args, exec_dir=exec_dir, dry_run=self.dry_run)
+            return invoke_process(args=base_args, exec_dir=exec_dir)
         else:
-            return invoke_process(args=base_args, dry_run=self.dry_run)
+            return invoke_process(args=base_args)

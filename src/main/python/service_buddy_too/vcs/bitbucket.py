@@ -4,6 +4,7 @@ from atlassian.bitbucket import Cloud
 from atlassian.bitbucket.cloud.workspaces import Workspace
 
 from service_buddy_too.service.service import Service
+from service_buddy_too.util import command_util
 from service_buddy_too.util.command_util import invoke_process
 
 
@@ -16,12 +17,10 @@ class BitbucketVCSProvider(object):
     def __init__(self):
         super(BitbucketVCSProvider, self).__init__()
         self.repo_root = ""
-        self.dry_run = False
         self.workspace_name: str = None
         self.root_workspace: Workspace = None
 
-    def init(self, user, password, repo_root, dry_run):
-        self.dry_run = dry_run
+    def init(self, user, password, repo_root):
         if user and password:
             client = Cloud(url="https://api.bitbucket.org/", username=user, password=password)
             self.root_workspace = client.workspaces.get(repo_root)
@@ -39,7 +38,7 @@ class BitbucketVCSProvider(object):
         else:
             logging.info("bitbucket find_repo git: %r", bitbucket_url)
             result = invoke_process(
-                args=['git', 'ls-remote', bitbucket_url, '>', '/dev/null'], exec_dir=None, dry_run=self.dry_run
+                args=['git', 'ls-remote', bitbucket_url, '>', '/dev/null'], exec_dir=None
             )
             exists = result == 0
         if not exists:
@@ -52,8 +51,7 @@ class BitbucketVCSProvider(object):
         return bitbucket_url
 
     def create_repo(self, service_definition: Service):
-
-        if self.dry_run:
+        if command_util.dry_run_global:
             logging.error("Creating repo %r", str(service_definition.get_repository_name()))
         else:
             if self.root_workspace is None:

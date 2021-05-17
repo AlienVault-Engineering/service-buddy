@@ -12,7 +12,7 @@ from service_buddy_too.service.service_template_generator import ServiceTemplate
 class CodeCreator(object):
     code_creators: Dict[str, CookeCutterProjectCreator]
 
-    def __init__(self, code_template_directory, dry_run):
+    def __init__(self, code_template_directory):
         super(CodeCreator, self).__init__()
         default_path = os.path.join(code_template_directory, "code-template-config.json")
         if os.path.exists(default_path):
@@ -31,7 +31,6 @@ class CodeCreator(object):
         self.service_template_generator = ServiceTemplateGenerator()
         self.code_creators = {
             CookeCutterProjectCreator.get_type(): CookeCutterProjectCreator(template_dir=code_template_directory,
-                                                                            dry_run=dry_run,
                                                                             templates=self.templates)}
         if self.default_provider not in self.code_creators:
             raise Exception("Requested provider is not configured {}".format(self.default_provider))
@@ -55,11 +54,14 @@ class CodeCreator(object):
     def get_default_code_creator(self):
         return self.code_creators[self.default_provider]
 
-    def create_project(self, service_definition: Service, app_dir:str, extra_config:dict=None) -> None:
+    def create_project(self, service_definition: Service, destination_directory:str, extra_config:dict=None) -> None:
         project = self.get_default_code_creator().create_project(service_definition=service_definition,
-                                                                 app_dir=app_dir,extra_config=extra_config)
+                                                                 destination_directory=destination_directory,
+                                                                 extra_config=extra_config)
         service_type_ = self.templates[service_definition.get_service_type()]
         create_service_def = service_type_.get('generate-service-definition', True)
         if create_service_def:
-           self.service_template_generator.create_project(service_definition,app_dir,service_type=service_type_.get('service-definition',None))
+           self.service_template_generator.create_project(service_definition,
+                                                          service_type=service_type_.get('service-definition',
+                                                                                         None))
         return project
