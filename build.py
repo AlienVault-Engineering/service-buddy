@@ -10,21 +10,18 @@ use_plugin("python.pylint")
 use_plugin("copy_resources")
 use_plugin("python.pycharm")
 
-
-
 name = "service-buddy-too"
 default_task = "publish"
 
 
 @init
 def initialize(project):
-
     build_number = project.get_property("build_number")
     if build_number is not None and "" != build_number:
         project.version = build_number
     else:
         project.version = "0.0.999"
-    #Project Manifest
+    # Project Manifest
     project.summary = "CLI for managing micro-services"
     project.home_page = "https://github.com/rspitler/service-buddy"
     project.description = "CLI for managing micro-services"
@@ -32,8 +29,8 @@ def initialize(project):
     project.license = "Apache 2.0"
     project.url = "https://github.com/rspitler/service-buddy"
     project.depends_on_requirements("requirements.txt")
-    #Build and test settings
-    project.set_property("run_unit_tests_propagate_stdout",True)
-    project.set_property("run_unit_tests_propagate_stderr",True)
-    project.include_file('service_buddy_too',"codegenerator/builtin-code-templates.json")
-    project.set_property("distutils_upload_repository","pypi")
+    # Build and test settings
+    project.set_property("run_unit_tests_propagate_stdout", True)
+    project.set_property("run_unit_tests_propagate_stderr", True)
+    project.include_file('service_buddy_too', "codegenerator/builtin-code-templates.json")
+    project.set_property("distutils_upload_repository", "pypi")

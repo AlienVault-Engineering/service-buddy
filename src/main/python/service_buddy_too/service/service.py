@@ -72,18 +72,13 @@ class Service(dict):
     def set_service_type(self, param):
         self[SERVICE_TYPE] = param
 
-    def prep_git(self):
-        # test if git exists
-        if self.is_service_directory_configured_for_git(): return
-        self.clone_repo()
-
     def clone_repo(self):
         if not  self.repo_exists(): raise Exception("Repository URL not configured before calling prep_git")
         repo_url = self.get_git_url()
         args = ['git', 'clone', repo_url, self.get_fully_qualified_service_name()]
         service_directory = self.get_service_directory()
-        if os.path.exists(service_directory):
-            logging.warning("Skipping clone step directory exists - {}".format(service_directory))
+        if self.is_service_directory_configured_for_git():
+            logging.warning("Skipping clone step directory configured for git - {}".format(service_directory))
         else:
             parent_dir = self.get_parent_dir()
             logging.info(f"Cloning repo from git for local modification - {repo_url} - {parent_dir}")

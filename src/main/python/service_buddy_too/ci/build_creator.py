@@ -75,7 +75,7 @@ class FileBasedBuildCreator(BuildCreator):
         service_dir = service_definition.get_service_directory()
         build_template = self.build_configuration.get(build_type, None)
         if build_template:
-            service_definition.prep_git()
+            service_definition.clone_repo()
             if os.path.exists(self._get_build_file(service_dir)):
                 logging.warning(f"Build file already exists {self._get_build_file(service_dir)}" )
                 self._build_exists_action(service_dir, build_template, service_definition)
