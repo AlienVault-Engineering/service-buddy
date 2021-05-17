@@ -21,4 +21,7 @@ class BitBucketPipelineBuildCreator(FileBasedBuildCreator):
         return os.path.join(service_dir, "bitbucket-pipelines.yml")
 
     def _build_exists_action(self, service_dir: str, build_template: dict, service_definition: Service):
+        # Bash file so cookie cutter doesnt puke
+        os.remove(self._get_build_file(service_dir))
+        # Rebuild
         super(BitBucketPipelineBuildCreator, self).create_build(service_dir, build_template, service_definition)
