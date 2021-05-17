@@ -105,8 +105,8 @@ class FileBasedBuildCreator(BuildCreator):
         # test if git exists
         if os.path.exists(os.path.join(service_dir,'.git')): return
         # clone in parent dir
-        logging.info(f"Cloning repo from git for local modification - {repo_url}")
         pardir = os.path.pardir(service_dir)
+        logging.info(f"Cloning repo from git for local modification - {repo_url} - {pardir}")
         invoke_process([['git', 'clone', repo_url]], exec_dir=pardir, dry_run=self.dry_run)
 
     def _create_script_build(self, service_dir: str, build_configuration: dict, service_definition: Service):
