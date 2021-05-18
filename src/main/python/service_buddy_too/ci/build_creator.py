@@ -52,8 +52,9 @@ class FileBasedBuildCreator(BuildCreator):
         # allow user to specify the directory in the github repo
         directory= build_configuration.get('directory', None)
         if command_util.dry_run_global:
-            logging.error("Creating project from template {} ".format(location))
+            logging.error("Creating build file from template {} ".format(location))
         else:
+            logging.info("Creating build file from template {} ".format(location))
             return cookiecutter(location, no_input=True,
                                 extra_context=extra_context,
                                 output_dir=service_dir,
@@ -77,10 +78,12 @@ class FileBasedBuildCreator(BuildCreator):
         if build_template:
             service_definition.clone_repo()
             if os.path.exists(self._get_build_file(service_dir)):
-                logging.warning(f"Build file already exists {self._get_build_file(service_dir)}" )
+                logging.warning(f"Build file already exists {self._get_build_file(service_dir)}")
                 invoke_process(['git', 'checkout', os.path.basename(self._get_build_file(service_dir))],
                                exec_dir=service_dir)
+                invoke_process(["git","status"],exec_dir=service_dir)
                 self._build_exists_action(service_dir, build_template, service_definition)
+                invoke_process(["git","status"],exec_dir=service_dir)
                 git_commands = [
                     ['git', 'commit', '-m', 'Build file - updated by service-buddy'],
                     ['git', 'push', '-u', 'origin', 'master']
