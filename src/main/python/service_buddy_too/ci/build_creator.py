@@ -79,12 +79,11 @@ class FileBasedBuildCreator(BuildCreator):
             service_definition.clone_repo()
             if os.path.exists(self._get_build_file(service_dir)):
                 logging.warning(f"Build file already exists {self._get_build_file(service_dir)}")
-                invoke_process(['git', 'add', os.path.basename(self._get_build_file(service_dir))],
-                               exec_dir=service_dir)
-                invoke_process(["git","status"],exec_dir=service_dir)
                 self._build_exists_action(service_dir, build_template, service_definition)
-                invoke_process(["git","status"],exec_dir=service_dir)
+
                 git_commands = [
+                    ['git', 'add', os.path.basename(self._get_build_file(service_dir))],
+                    ["git","status"],
                     ['git', 'commit', '-m', 'Build file - updated by service-buddy'],
                     ['git', 'push', '-u', 'origin', 'master']
                 ]
