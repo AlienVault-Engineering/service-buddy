@@ -50,9 +50,8 @@ class VCS(object):
         walk_service_map(application_map=application_map, application_callback=None,
                          service_callback=populate_repo_metadata)
 
-    def create_project(self, service_definition, app_dir):
-        return self.init_repo(service_definition=service_definition,
-                              service_dir=service_definition.get_service_directory())
+    def create_project(self, service_definition, app_dir=None):
+        return self.init_repo(service_definition=service_definition)
 
     def init_repo(self, service_definition:Service):
         repo_url = self._get_default_vcs_provider().create_repo(service_definition)
