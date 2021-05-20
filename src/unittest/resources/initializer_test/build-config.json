@@ -1,0 +1,17 @@
+{
+  "provider":"bitbucket",
+  "build-templates": {
+      "pylib-local": {
+        "type": "infrastructure"
+      },
+      "pylib-remote": {
+        "type": "infrastructure"
+      },
+      "api-service": {
+        "type": "infrastructure"
+      },
+      "cluster": {
+        "type": "infrastructure"
+      }
+    }
+}
