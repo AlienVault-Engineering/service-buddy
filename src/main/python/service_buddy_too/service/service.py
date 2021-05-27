@@ -78,8 +78,8 @@ class Service(dict):
         args = ['git', 'clone', repo_url, self.get_fully_qualified_service_name()]
         service_directory = self.get_service_directory()
         if self.is_service_directory_configured_for_git():
-            logging.warning("Skipping clone step directory configured for git - {}".format(service_directory))
+            logging.info("Directory already configured for git - {}".format(service_directory))
         else:
             parent_dir = self.get_parent_dir()
-            logging.info(f"Cloning repo from git for local modification - {repo_url} - {parent_dir}")
+            logging.warning(f"Cloning repo from git for local modification - {repo_url} - {parent_dir}")
             invoke_process(args, parent_dir)

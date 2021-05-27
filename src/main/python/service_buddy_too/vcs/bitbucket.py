@@ -25,7 +25,7 @@ class BitbucketVCSProvider(object):
             client = Cloud(url="https://api.bitbucket.org/", username=user, password=password)
             self.root_workspace = client.workspaces.get(repo_root)
         else:
-            logging.warning("VCS username and password not configured - assuming git executable has appropriate "
+            logging.info("VCS username and password not configured - assuming git executable has appropriate "
                             "authorization for repo checks")
 
         self.workspace_name = repo_root
@@ -33,15 +33,15 @@ class BitbucketVCSProvider(object):
     def find_repo(self, service_definition: Service):
         bitbucket_url = self._get_git_ssh_url(service_definition)
         if self.root_workspace:
-            logging.info("bitbucket find_repo api: %r", bitbucket_url)
             exists = self.root_workspace.repositories.exists(service_definition.get_repository_name())
         else:
-            logging.info("bitbucket find_repo git: %r", bitbucket_url)
             result = invoke_process(
                 args=['git', 'ls-remote', bitbucket_url, '>', '/dev/null'], exec_dir=None
             )
             exists = result == 0
-        if not exists:
+        if exists:
+            logging.info(f"Found repo for {service_definition.get_fully_qualified_service_name()}: {bitbucket_url}", )
+        else:
             logging.info(f"Could not find repository - {service_definition.get_repository_name()}")
             bitbucket_url = None
         return bitbucket_url

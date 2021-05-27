@@ -3,7 +3,7 @@ import logging
 
 def configure_logging(verbose=False):
     console = ColorLog()
-    console.setLevel(logging.DEBUG if verbose else logging.INFO)
+    console.setLevel(logging.DEBUG if verbose else logging.WARNING)
     logging.getLogger('').addHandler(console)
     logging.getLogger('').setLevel(logging.DEBUG)
 
