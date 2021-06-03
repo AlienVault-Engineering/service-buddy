@@ -15,6 +15,11 @@ class CodeCreator(object):
     def __init__(self, code_template_directory):
         super(CodeCreator, self).__init__()
         default_path = os.path.join(code_template_directory, "code-template-config.json")
+        infra_buddy_default_path = os.path.join(code_template_directory, "infra-buddy-defaults.json")
+        if os.path.exists(infra_buddy_default_path):
+            self.ib_defaults = infra_buddy_default_path
+        else:
+            self.ib_defaults = None
         if os.path.exists(default_path):
             with open(default_path) as fp:
                 defaults = json.load(fp)
@@ -65,5 +70,6 @@ class CodeCreator(object):
             self.service_template_generator.create_project(service_definition,
                                                            service_type=service_type_.get('service-definition',
                                                                                           None),
-                                                           defaults=service_type_.get('service-defaults',None))
+                                                           defaults=service_type_.get('service-defaults',None),
+                                                           self.ib_defaults)
         return project
