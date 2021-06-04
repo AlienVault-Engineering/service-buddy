@@ -71,5 +71,5 @@ class CodeCreator(object):
                                                            service_type=service_type_.get('service-definition',
                                                                                           None),
                                                            defaults=service_type_.get('service-defaults',None),
-                                                           self.ib_defaults)
+                                                           ib_defaults=self.ib_defaults)
         return project
