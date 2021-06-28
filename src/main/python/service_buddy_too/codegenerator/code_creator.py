@@ -24,6 +24,7 @@ class CodeCreator(object):
             with open(default_path) as fp:
                 defaults = json.load(fp)
                 self.default_provider = defaults.get('provider', None)
+                self.remote_template_locations = defaults.get('service-template-definition-locations', None)
                 self.extended_templates = defaults.get('code-template-definitions', {})
         else:
             logging.info("Could not locate 'code-template-config.json' in code template directory")
@@ -71,5 +72,6 @@ class CodeCreator(object):
                                                            service_type=service_type_.get('service-definition',
                                                                                           None),
                                                            defaults=service_type_.get('service-defaults',None),
-                                                           ib_defaults=self.ib_defaults)
+                                                           ib_defaults=self.ib_defaults,
+                                                           remote_template_locations=self.remote_template_locations)
         return project
