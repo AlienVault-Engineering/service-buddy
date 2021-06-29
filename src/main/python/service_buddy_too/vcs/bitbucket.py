@@ -1,6 +1,7 @@
 import logging
 
 from atlassian.bitbucket import Cloud
+from atlassian.bitbucket.cloud.repositories import WorkspaceRepositories
 from atlassian.bitbucket.cloud.workspaces import Workspace
 
 from service_buddy_too.service.service import Service
@@ -60,16 +61,14 @@ class BitbucketVCSProvider(object):
             project = self.root_workspace.projects.exists(project_key)
             if not project:
                 logging.info(f"Creating project for {service_definition.get_app()}")
-                # Have to make not private due to limitation in SDK
                 project = self.root_workspace.projects.create(name=service_definition.get_app(),
                                                               key=project_key,
                                                               description=service_definition.get_app(),
-                                                              is_private=False)
-            # See I told you, there is a limitation in the SDK where you can not provide is_private
-            # on creation, if you try ot create a public repo in a private project it fails
+                                                              is_private=True)
             repo = self.root_workspace.repositories.create(project_key=project_key,
-                                                           repo_slug=service_definition.get_repository_name().replace('-','_'))
-            repo.is_private = True
+                                                           repo_slug=service_definition.get_repository_name().replace('-','_'),
+                                                           is_private=True, fork_policy=WorkspaceRepositories.NO_FORKS)
             repo.description = service_definition.get_description()
             repo.name = service_definition.get_fully_qualified_service_name()
+
         return self._get_git_ssh_url(service_definition)
