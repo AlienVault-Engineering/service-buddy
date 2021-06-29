@@ -1,6 +1,6 @@
 PyGithub
 cookiecutter
 click
-infra_buddy
+git+https://git@github.com/rspitler/infra-buddy
 requests
 atlassian-python-api
