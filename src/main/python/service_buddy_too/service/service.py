@@ -56,7 +56,7 @@ class Service(dict):
         return self.get(REPO_URL,None)
 
     def get_service_directory(self):
-        join = os.path.join(self.get_parent_dir(), self.get_fully_qualified_service_name())
+        join = os.path.join(self.get_parent_dir(), self.get_role())
         os.makedirs(join, exist_ok=True)
         return join
 
@@ -75,10 +75,9 @@ class Service(dict):
     def clone_repo(self):
         if not  self.repo_exists(): raise Exception("Repository URL not configured before calling prep_git")
         repo_url = self.get_git_url()
-        args = ['git', 'clone', repo_url, self.get_fully_qualified_service_name()]
-        service_directory = self.get_service_directory()
+        args = ['git', 'clone', repo_url, self.get_role()]
         if self.is_service_directory_configured_for_git():
-            logging.info("Directory already configured for git - {}".format(service_directory))
+            logging.info("Directory already configured for git - {}".format(self.get_service_directory()))
         else:
             parent_dir = self.get_parent_dir()
             logging.warning(f"Cloning repo from git for local modification - {repo_url} - {parent_dir}")
