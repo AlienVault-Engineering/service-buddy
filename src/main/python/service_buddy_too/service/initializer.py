@@ -5,10 +5,11 @@ from service_buddy_too.codegenerator.code_creator import CodeCreator
 from service_buddy_too.service.loader import safe_mkdir, walk_service_map
 from service_buddy_too.service.service import Service
 from service_buddy_too.util.pretty_printer import pretty_print_service
+from service_buddy_too.vcs.vcs import VCS
 
 
 class Initializer(object):
-    def __init__(self, vcs, destination_directory, code_template_directory,
+    def __init__(self, vcs:VCS, destination_directory, code_template_directory,
                  skip_code_creation=False,
                  skip_build_creation=False,
                  skip_git_creation=False,
@@ -45,6 +46,7 @@ class Initializer(object):
                 self.vcs.create_project(definition, app_destination_dir)
         else:
             logging.info("Service exists - {}".format(definition.get_fully_qualified_service_name()))
+            self.vcs.update_repo_metadata(definition)
 
         if self.skip_build_creation:
             logging.info("Skipping build creation")

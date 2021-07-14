@@ -3,6 +3,7 @@ import logging
 from github import Github
 from requests import HTTPError
 
+from service_buddy_too.service.service import Service
 from service_buddy_too.util import command_util
 from service_buddy_too.util.command_util import invoke_process
 
@@ -71,3 +72,9 @@ class GitHubVCSProvider(object):
                 raise Exception("VCS pass required for create repo operation")
             repo = self.client.create_repo(**payload)
             return repo.ssh_url
+
+    def update_repo_metadata(self, service_definition:Service):
+        for repo in self.client.get_repos():
+            if repo.name == service_definition.get_fully_qualified_service_name():
+                repo.edit(description=service_definition.get_description())
+                break

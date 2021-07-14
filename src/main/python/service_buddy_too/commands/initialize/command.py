@@ -21,7 +21,7 @@ from service_buddy_too.service.initializer import Initializer
 @click.option('--skip-code-creation', envvar='SKIP_CODE_CREATE',  is_flag=True, default=False,
               help='Skip the templating of the source code.')
 @click.pass_obj
-def list_service(service_ctx,code_template_definitions, skip_build_creation, force_build_creation, skip_code_creation,skip_git_creation):
+def list_service(service_ctx, code_template_definitions, skip_build_creation, force_build_creation, skip_code_creation, skip_git_creation):
     vcs =service_ctx.vcs
     application_map = service_ctx.application_map
     vcs.validate_repositories(application_map)

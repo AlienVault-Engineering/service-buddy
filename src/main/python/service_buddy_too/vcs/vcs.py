@@ -53,6 +53,9 @@ class VCS(object):
     def create_project(self, service_definition, app_dir=None):
         return self.init_repo(service_definition=service_definition)
 
+    def update_repo_metadata(self, service_definition:Service):
+        self._get_default_vcs_provider().update_repo_metadata(service_definition=service_definition)
+
     def init_repo(self, service_definition:Service):
         repo_url = self._get_default_vcs_provider().create_repo(service_definition)
         self.init_git_for_directory(repo_url, service_definition.get_service_directory())

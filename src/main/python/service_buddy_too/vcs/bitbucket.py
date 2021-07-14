@@ -41,7 +41,8 @@ class BitbucketVCSProvider(object):
             )
             exists = result == 0
         if exists:
-            logging.info(f"Found repo for {service_definition.get_fully_qualified_service_name()}: {bitbucket_url}", )
+            logging.info(f"Found repo for {service_definition.get_fully_qualified_service_name()}: {bitbucket_url}" )
+            logging.warning(".")
         else:
             logging.info(f"Could not find repository - {service_definition.get_repository_name()}")
             bitbucket_url = None
@@ -72,3 +73,9 @@ class BitbucketVCSProvider(object):
             repo.name = service_definition.get_fully_qualified_service_name()
 
         return self._get_git_ssh_url(service_definition)
+
+    def update_repo_metadata(self,service_definition:Service):
+        if not self.root_workspace.repositories.exists(service_definition.get_repository_name()):
+            logging.warning("Tried to update non-existent repo!")
+        repository = self.root_workspace.repositories.get(repository=service_definition.get_repository_name())
+        repository.description = service_definition.get_description()
