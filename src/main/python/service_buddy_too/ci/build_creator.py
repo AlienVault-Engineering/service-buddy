@@ -44,6 +44,8 @@ class FileBasedBuildCreator(BuildCreator):
             location = os.path.abspath(os.path.join(self.template_directory, build_configuration['location']))
         elif build_configuration['type'] == 'github':
             location = build_configuration['location']
+        elif build_configuration['type'] == 'bitbucket':
+            location = build_configuration['location']
         else:
             raise Exception(f"Unknown build configuration type - {build_configuration['type']} " )
         extra_context = _make_cookie_safe(service_definition)
