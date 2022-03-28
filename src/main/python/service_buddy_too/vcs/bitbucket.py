@@ -36,10 +36,12 @@ class BitbucketVCSProvider(object):
         if self.root_workspace:
             exists = self.root_workspace.repositories.exists(service_definition.get_repository_name())
         else:
-            result = invoke_process(
-                args=['git', 'ls-remote', bitbucket_url, '>', '/dev/null'], exec_dir=None
-            )
-            exists = result == 0
+            exists = service_definition.does_service_directory_exists()
+            if not exists:
+                result = invoke_process(
+                    args=['git', 'ls-remote', bitbucket_url, '>', '/dev/null'], exec_dir=None
+                )
+                exists = result == 0
         if exists:
             logging.info(f"Found repo for {service_definition.get_fully_qualified_service_name()}: {bitbucket_url}" )
             logging.warning(".")

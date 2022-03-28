@@ -60,6 +60,10 @@ class Service(dict):
         os.makedirs(join, exist_ok=True)
         return join
 
+    def does_service_directory_exists(self):
+        join = os.path.join(self.get_parent_dir(), self.get_role())
+        return os.path.exists(join)
+
     def get_parent_dir(self):
         directory = self.app_ref.get_app_code_directory()
         os.makedirs(directory, exist_ok=True)
