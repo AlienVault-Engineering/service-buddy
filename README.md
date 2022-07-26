@@ -1,6 +1,6 @@
-# service-buddy
+# service-buddy 
 
-[Build Status](https://api.travis-ci.org/AlienVault-Engineering/service-manager.png) 
+[![Upload Python Package](https://github.com/Nudge-Security/service-buddy/actions/workflows/python-publish.yml/badge.svg)](https://github.com/Nudge-Security/service-buddy/actions/workflows/python-publish.yml)
 ## Installation
 
 ```bash
