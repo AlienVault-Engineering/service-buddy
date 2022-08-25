@@ -1,6 +1,6 @@
 PyGithub
 cookiecutter
 click
-infra_buddy
+infra-buddy-too
 requests
 atlassian-python-api
