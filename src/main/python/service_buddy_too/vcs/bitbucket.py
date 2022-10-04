@@ -79,7 +79,9 @@ class BitbucketVCSProvider(object):
     def update_repo_metadata(self,service_definition:Service):
         if not self.root_workspace:
             logging.warning("Skipping repo metadata update due to lack of username and password")
+            return
         if not self.root_workspace.repositories.exists(service_definition.get_repository_name()):
             logging.warning("Tried to update non-existent repo!")
+            return
         repository = self.root_workspace.repositories.get(repository=service_definition.get_repository_name())
         repository.description = service_definition.get_description()
