@@ -32,6 +32,14 @@ class ServiceLoadTestCase(ParentTestCase):
         self.assertEqual(1, len(application_map), "Did not load only app1")
         app1 = application_map['app1']
         self.assertEqual(4, len(app1), "Did not load all services for app1")
+
+    def test_type_filter(self):
+        application_map = loader.load_service_definitions(self.service_directory,
+                                                          code_directory=self.temp_dir,
+                                                          app_filter='app1', type_filter="pylib-remote")
+        self.assertEqual(1, len(application_map), "Did not load only app1")
+        app1 = application_map['app1']
+        self.assertEqual(2, len(app1), "Did not load all services for app1")
         self._validate_service_definition(app1)
 
     def _validate_service_definition(self, app):
