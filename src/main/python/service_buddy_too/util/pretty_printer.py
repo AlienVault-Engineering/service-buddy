@@ -2,7 +2,7 @@ import logging
 
 from service_buddy_too.service.loader import walk_service_map
 
-from src.main.python.service_buddy_too.service.service import Service
+from service_buddy_too.service.service import Service
 
 
 def pretty_print_application(app): logging.error(u"{}".format(app))
