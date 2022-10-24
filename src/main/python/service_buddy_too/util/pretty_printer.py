@@ -21,4 +21,4 @@ def pretty_print_services(application_map):
     walk_service_map(application_map, pretty_print_application, pretty_print_service)
 
 def print_fqsn_services(application_map):
-    walk_service_map(application_map, lambda x:"", print_fqsn_service)
+    walk_service_map(application_map, None, print_fqsn_service)
