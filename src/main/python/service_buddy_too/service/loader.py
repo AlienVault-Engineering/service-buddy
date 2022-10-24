@@ -9,7 +9,8 @@ from service_buddy_too.service.application import Application
 from service_buddy_too.service.service import Service
 
 
-def load_service_definitions(service_directory:str,code_directory:str, app_filter:str=None, service_filter:str=".*"):
+def load_service_definitions(service_directory:str,code_directory:str, app_filter:str=None,
+                             service_filter:str=".*", type_filter=None):
     service_dir = os.path.abspath(service_directory)
     listdir = os.listdir(service_dir)
     service_map: Dict[str, Application] = dict()
@@ -25,13 +26,17 @@ def load_service_definitions(service_directory:str,code_directory:str, app_filte
                 with open(service_definition_file) as service_def:
                     service_definitions = json.load(service_def)
                     for role, definition in service_definitions.items():
-                        if re.match(service_filter, role):
-                            service_map[dir].add_service(
-                                role, Service(app=dir, role=role,
-                                              definition=definition,
-                                              app_reference=service_map[dir])
-                            )
+                        service = Service(app=dir, role=role, definition=definition, app_reference=service_map[dir])
+                        if _load_service(service, service_filter, type_filter):
+                            service_map[dir].add_service(role, service)
     return service_map
+
+
+def _load_service(service:Service, service_filter, type_filter):
+    if type_filter:
+        if service.get_service_type() != type_filter:
+            return False
+    return re.match(service_filter, service.get_role())
 
 
 def _is_valid_app(dir, service_dir):

@@ -10,6 +10,8 @@ from service_buddy_too.util.log_handler import configure_logging
                                                             ' that match the passed filter')
 @click.option("--service-filter", envvar='SERVICE_FILTER',default=".*", help='Constrain command to operate on services'
                                                             ' that match the passed filter')
+
+@click.option('--type-filter', envvar='TYPE_FILTER',  help='Only print services of given type')
 @click.option("--service-directory", envvar='SERVICE_DIRECTORY', type=click.Path(),
               default="./services",
               help='Directory containing service definitions in <app>/service.json format.  Default is \'./services\'')
@@ -21,7 +23,7 @@ from service_buddy_too.util.log_handler import configure_logging
 @click.option("--verbose", is_flag=True, help='Print verbose status messages')
 @click.option("--dry-run", is_flag=True, help='Preview effect of action')
 @click.pass_context
-def cli(ctx, application_filter, service_filter, service_directory, destination_directory, verbose, dry_run):
+def cli(ctx, application_filter, service_filter, service_directory,type_filter, destination_directory, verbose, dry_run):
     """
     CLI for managing the repositories and build pipeline in a micro-service architecture..
     """
@@ -31,7 +33,8 @@ def cli(ctx, application_filter, service_filter, service_directory, destination_
         filter_string=application_filter,
         service_filter_string=service_filter,
         service_directory=service_directory,
-        destination_directory=destination_directory
+        destination_directory=destination_directory,
+        type_filter=type_filter
     )
 
 
