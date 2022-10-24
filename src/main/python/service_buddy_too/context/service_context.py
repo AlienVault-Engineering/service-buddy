@@ -7,7 +7,7 @@ from service_buddy_too.vcs.vcs import VCS
 
 class ServiceContext(object):
 
-    def __init__(self, filter_string, service_filter_string, service_directory, destination_directory):
+    def __init__(self, filter_string, service_filter_string, service_directory, destination_directory, type_filter=None):
         super(ServiceContext, self).__init__()
         self.destination_directory = destination_directory
         if not os.path.exists(service_directory):
@@ -16,5 +16,6 @@ class ServiceContext(object):
             self.application_map = loader.load_service_definitions(service_directory=service_directory,
                                                                    code_directory=destination_directory,
                                                                    app_filter=filter_string,
-                                                                   service_filter=service_filter_string)
+                                                                   service_filter=service_filter_string,
+                                                                   type_filter=type_filter)
             self.vcs = VCS(service_directory=service_directory)
