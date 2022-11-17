@@ -1,8 +1,10 @@
 import logging
+import os
+import sys
 
 
 def configure_logging(verbose=False):
-    console = ColorLog()
+    console = logging.StreamHandler(sys.stdout) if os.environ.get('I_AM_DULL', False) else ColorLog()
     console.setLevel(logging.DEBUG if verbose else logging.WARNING)
     logging.getLogger('').addHandler(console)
     logging.getLogger('').setLevel(logging.DEBUG)
