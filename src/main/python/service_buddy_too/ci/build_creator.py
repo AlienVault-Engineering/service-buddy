@@ -37,6 +37,7 @@ class BuildCreator(object):
 class FileBasedBuildCreator(BuildCreator):
 
     def create_build(self, service_dir: str, build_configuration: dict, service_definition: Service):
+
         if 'type' not in build_configuration or build_configuration['type'] == 'script':
             logging.info("Creating script build")
             return self._create_script_build(service_dir, build_configuration, service_definition)
@@ -44,8 +45,10 @@ class FileBasedBuildCreator(BuildCreator):
             location = os.path.abspath(os.path.join(self.template_directory, build_configuration['location']))
         elif build_configuration['type'] == 'github':
             location = build_configuration['location']
+            location = self.transform_location(location, 'github')
         elif build_configuration['type'] == 'bitbucket':
             location = build_configuration['location']
+            location = self.transform_location(location, 'bitbucket')
         else:
             raise Exception(f"Unknown build configuration type - {build_configuration['type']} " )
         extra_context = _make_cookie_safe(service_definition)
@@ -105,3 +108,16 @@ class FileBasedBuildCreator(BuildCreator):
 
     def _create_script_build(self, service_dir: str, build_configuration: dict, service_definition: Service):
         raise Exception(f'Script build not supported for this build creator - {self.get_type()}')
+
+    @staticmethod
+    def transform_location(location, provider):
+        user = os.environ.get('VCS_USER')
+        password = os.environ.get('VCS_PASSWORD')
+        if provider == 'github':
+            provider_domain = 'github.com'
+        elif provider == 'bitbucket':
+            provider_domain = 'bitbucket.org'
+        if not user:
+            return f'git@{provider_domain}:{location}'
+        else:
+            return f'https://{user}:{password}@{provider_domain}/{location}'
