@@ -20,11 +20,15 @@ class BitbucketVCSProvider(object):
         self.repo_root = ""
         self.workspace_name: str = None
         self.root_workspace: Workspace = None
+        self.user = None
+        self.password = None
 
     def init(self, user, password, repo_root):
         if user and password:
             client = Cloud(url="https://api.bitbucket.org/", username=user, password=password)
             self.root_workspace = client.workspaces.get(repo_root)
+            self.user = user
+            self.password = password
         else:
             logging.info("VCS username and password not configured - assuming git executable has appropriate "
                             "authorization for repo checks")
@@ -32,7 +36,7 @@ class BitbucketVCSProvider(object):
         self.workspace_name = repo_root
 
     def find_repo(self, service_definition: Service):
-        bitbucket_url = self._get_git_ssh_url(service_definition)
+        bitbucket_url = self._get_git_url(service_definition)
         if self.root_workspace:
             exists = self.root_workspace.repositories.exists(service_definition.get_repository_name())
         else:
@@ -50,8 +54,13 @@ class BitbucketVCSProvider(object):
             bitbucket_url = None
         return bitbucket_url
 
-    def _get_git_ssh_url(self, service_definition):
-        bitbucket_url = f'ssh://git@bitbucket.org/{self.workspace_name}/{service_definition.get_repository_name()}'
+    def _get_git_url(self, service_definition):
+        if self.user: #assume has auth if user set
+            # git remote set-url origin https://<your username>:${APP_SECRET}@bitbucket.org/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}
+            bit_prefix = f"https://{self.user}:{self.password}"
+        else:
+            bit_prefix = f"ssh://git"
+        bitbucket_url = f'{bit_prefix}@bitbucket.org/{self.workspace_name}/{service_definition.get_repository_name()}'
         return bitbucket_url
 
     def create_repo(self, service_definition: Service):
@@ -74,7 +83,7 @@ class BitbucketVCSProvider(object):
             repo.description = service_definition.get_description()
             repo.name = service_definition.get_fully_qualified_service_name()
 
-        return self._get_git_ssh_url(service_definition)
+        return self._get_git_url(service_definition)
 
     def update_repo_metadata(self,service_definition:Service):
         if not self.root_workspace:
