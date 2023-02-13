@@ -2,6 +2,7 @@ import logging
 import os
 from typing import Dict
 
+from click import ClickException
 from cookiecutter.main import cookiecutter
 
 from service_buddy_too.codegenerator.cookie_cutter_creator import _make_cookie_safe
@@ -9,6 +10,20 @@ from service_buddy_too.service.service import Service
 from service_buddy_too.util import command_util
 from service_buddy_too.util.command_util import invoke_process
 
+
+def transform_location(location, provider):
+    user = os.environ.get('VCS_USER')
+    password = os.environ.get('VCS_PASSWORD')
+    if provider == 'github':
+        provider_domain = 'github.com'
+    elif provider == 'bitbucket':
+        provider_domain = 'bitbucket.org'
+    else:
+        raise ClickException(f"Can not locate provider {provider}")
+    if not user:
+        return f'git@{provider_domain}:{location}'
+    else:
+        return f'https://{user}:{password}@{provider_domain}/{location}'
 
 class BuildCreator(object):
 
@@ -45,10 +60,10 @@ class FileBasedBuildCreator(BuildCreator):
             location = os.path.abspath(os.path.join(self.template_directory, build_configuration['location']))
         elif build_configuration['type'] == 'github':
             location = build_configuration['location']
-            location = self.transform_location(location, 'github')
+            location = transform_location(location, 'github')
         elif build_configuration['type'] == 'bitbucket':
             location = build_configuration['location']
-            location = self.transform_location(location, 'bitbucket')
+            location = transform_location(location, 'bitbucket')
         else:
             raise Exception(f"Unknown build configuration type - {build_configuration['type']} " )
         extra_context = _make_cookie_safe(service_definition)
@@ -109,15 +124,3 @@ class FileBasedBuildCreator(BuildCreator):
     def _create_script_build(self, service_dir: str, build_configuration: dict, service_definition: Service):
         raise Exception(f'Script build not supported for this build creator - {self.get_type()}')
 
-    @staticmethod
-    def transform_location(location, provider):
-        user = os.environ.get('VCS_USER')
-        password = os.environ.get('VCS_PASSWORD')
-        if provider == 'github':
-            provider_domain = 'github.com'
-        elif provider == 'bitbucket':
-            provider_domain = 'bitbucket.org'
-        if not user:
-            return f'git@{provider_domain}:{location}'
-        else:
-            return f'https://{user}:{password}@{provider_domain}/{location}'
