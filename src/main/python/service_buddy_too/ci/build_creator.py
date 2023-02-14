@@ -5,25 +5,12 @@ from typing import Dict
 from click import ClickException
 from cookiecutter.main import cookiecutter
 
+from service_buddy_too.vcs.vcs import transform_location
 from service_buddy_too.codegenerator.cookie_cutter_creator import _make_cookie_safe
 from service_buddy_too.service.service import Service
 from service_buddy_too.util import command_util
 from service_buddy_too.util.command_util import invoke_process
 
-
-def transform_location(location, provider):
-    user = os.environ.get('VCS_USER')
-    password = os.environ.get('VCS_PASSWORD')
-    if provider == 'github':
-        provider_domain = 'github.com'
-    elif provider == 'bitbucket':
-        provider_domain = 'bitbucket.org'
-    else:
-        raise ClickException(f"Can not locate provider {provider}")
-    if not user:
-        return f'git@{provider_domain}:{location}'
-    else:
-        return f'https://{user}:{password}@{provider_domain}/{location}'
 
 class BuildCreator(object):
 

@@ -4,6 +4,8 @@ import os
 from collections import OrderedDict
 from typing import Dict, Union
 
+from click import ClickException
+
 from service_buddy_too.service.loader import walk_service_map
 from service_buddy_too.service.service import Service
 from service_buddy_too.util.command_util import invoke_process
@@ -19,6 +21,22 @@ options = OrderedDict()
 options['root-user'] = "Organization name. Team name, organization, workspace or root user used by vcs provider"
 options['user'] = "Username for authentication when creating repositories (leave blank to use ${VCS_USER})"
 options['password'] = "Password for authentication when creating repositories (leave blank to use ${VCS_PASSWORD})"
+
+
+@staticmethod
+def transform_location(location, provider):
+    user = os.environ.get('VCS_USER')
+    password = os.environ.get('VCS_PASSWORD')
+    if provider == 'github':
+        provider_domain = 'github.com'
+    elif provider == 'bitbucket':
+        provider_domain = 'bitbucket.org'
+    else:
+        raise ClickException(f"Can not locate provider {provider}")
+    if not user:
+        return f'git@{provider_domain}:{location}'
+    else:
+        return f'https://{user}:{password}@{provider_domain}/{location}'
 
 
 class VCS(object):
