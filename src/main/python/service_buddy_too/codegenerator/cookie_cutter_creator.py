@@ -3,10 +3,10 @@ import os
 
 from cookiecutter.main import cookiecutter
 
-from service_buddy_too.ci import build_creator
 from service_buddy_too.service.service import Service
 from service_buddy_too.util import command_util
-from service_buddy_too.ci.build_creator import transform_location
+from service_buddy_too.vcs.vcs import transform_location
+
 
 def _make_cookie_safe(service_definition):
     ret = {}
@@ -21,13 +21,13 @@ class CookeCutterProjectCreator(object):
         self.template_dir = template_dir
         self.templates =templates
 
-    def create_project(self, service_definition:Service,destination_directory:str, extra_config=None):
+    def create_project(self, service_definition: Service, destination_directory: str, extra_config=None):
         template = self._lookup_service_template(service_definition.get_service_type())
         if template['type'] == 'file':
             location = os.path.abspath(os.path.join(self.template_dir, template['location']))
         else:
             location = template['location']
-            location = transform_location(location,template['type'])
+            location = transform_location(location, template['type'])
         extra_context = _make_cookie_safe(service_definition)
         if extra_config:
             extra_context.update(_make_cookie_safe(extra_config))
