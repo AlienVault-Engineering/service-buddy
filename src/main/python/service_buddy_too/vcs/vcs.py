@@ -23,7 +23,6 @@ options['user'] = "Username for authentication when creating repositories (leave
 options['password'] = "Password for authentication when creating repositories (leave blank to use ${VCS_PASSWORD})"
 
 
-@staticmethod
 def transform_location(location, provider):
     user = os.environ.get('VCS_USER')
     password = os.environ.get('VCS_PASSWORD')
