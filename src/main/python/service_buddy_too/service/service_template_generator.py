@@ -14,7 +14,7 @@ from service_buddy_too.service.loader import safe_mkdir
 
 class ServiceTemplateGenerator(object):
 
-    def create_project(self, service_definition, service_type=None, defaults=None, ib_defaults=None, remote_template_locations=None):
+    def create_project(self, service_definition, service_type=None, defaults=None, service_modifications=None, ib_defaults=None, remote_template_locations=None):
         if not service_type:
             service_type = service_definition.get_service_type()
         service_def_folder = os.path.join(service_definition.get_service_directory(), "service")
@@ -34,6 +34,8 @@ class ServiceTemplateGenerator(object):
                     service_json["service-template-definition-locations"] = remote_template_locations
                 if defaults:
                     service_json['deployment-parameters'] = {**parameters_, **defaults}
+                if service_modifications:
+                    service_json['service-modifications'] = service_modifications
             with open(service_file_path, 'w') as fp:
                 json.dump(service_json, fp, indent=1)
         if ib_defaults:

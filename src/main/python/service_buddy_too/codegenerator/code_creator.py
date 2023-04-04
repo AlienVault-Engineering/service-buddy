@@ -72,6 +72,7 @@ class CodeCreator(object):
                                                            service_type=service_type_.get('service-definition',
                                                                                           None),
                                                            defaults=service_type_.get('service-defaults',None),
+                                                           service_modifications=service_type_.get('service-modifications',[]),
                                                            ib_defaults=self.ib_defaults,
                                                            remote_template_locations=self.remote_template_locations)
         return project
