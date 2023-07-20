@@ -1,6 +1,5 @@
 {
-  "provider":"bamboo",
-  "bamboo-url":"https://localhost:8085",
+  "provider":"bitbucket",
   "build-templates": {
       "pylib-local": {
         "type": "infrastructure"
