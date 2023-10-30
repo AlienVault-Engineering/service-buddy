@@ -52,7 +52,7 @@ class BitbucketVCSProvider(object):
                 )
                 exists = result == 0
         if exists:
-            logging.info(f"Found repo for {service_definition.get_fully_qualified_service_name()}: {bitbucket_url}")
+            logging.info(f"Found repo for {service_definition.get_fully_qualified_service_name()}")
             logging.warning(".")
         else:
             logging.info(f"Could not find repository - {service_definition.get_repository_name()}")
