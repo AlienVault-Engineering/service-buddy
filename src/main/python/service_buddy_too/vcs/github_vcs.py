@@ -18,7 +18,7 @@ class GitHubVCSProvider(object):
         self.repo_root = ""
         self.client = None
 
-    def init(self, user, password, repo_root):
+    def init(self, token, user, password, repo_root):
         self.repo_root = repo_root
         if user and password:
             self.client = Github(user, password).get_organization(self.repo_root)

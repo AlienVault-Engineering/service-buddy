@@ -59,10 +59,11 @@ class VCS(object):
                 self.password = defaults.get('password', os.environ.get('VCS_PASSWORD'))
         else:
             raise Exception("Could not local 'vcs-config.json' in service directory")
+
         if self.default_provider not in vcs_provider_map:
             raise Exception("Requested provider is not configured {}".format(self.default_provider))
         else:
-            self._get_default_vcs_provider().init(self.user, self.password, self.repo_root)
+            self._get_default_vcs_provider().init(self.token, self.user, self.password, self.repo_root)
 
     def _get_default_vcs_provider(self):
         return vcs_provider_map[self.default_provider]
