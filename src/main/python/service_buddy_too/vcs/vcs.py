@@ -19,19 +19,26 @@ vcs_providers = [key for key in vcs_provider_map.keys()]
 
 options = OrderedDict()
 options['root-user'] = "Organization name. Team name, organization, workspace or root user used by vcs provider"
+options['token'] = "Token for use instead of user / password authentication. Currently only supported for Bitbucket " \
+                   "Workspace tokens"
 options['user'] = "Username for authentication when creating repositories (leave blank to use ${VCS_USER})"
 options['password'] = "Password for authentication when creating repositories (leave blank to use ${VCS_PASSWORD})"
 
 
+# TODO: Need to handle token authentication generically. This pretty much assumes Bitbucket only.
+
 def transform_location(location, provider):
     user = os.environ.get('VCS_USER')
     password = os.environ.get('VCS_PASSWORD')
+    token = os.environ.get('VCS_TOKEN')
     if provider == 'github':
         provider_domain = 'github.com'
     elif provider == 'bitbucket':
         provider_domain = 'bitbucket.org'
     else:
         raise ClickException(f"Can not locate provider {provider}")
+    if token:
+        return f'https://x-token-auth:{token}@{provider_domain}/{location}'
     if not user:
         return f'git@{provider_domain}:{location}'
     else:
@@ -47,6 +54,7 @@ class VCS(object):
                 defaults = json.load(fp)
                 self.default_provider = defaults.get('provider', None)
                 self.repo_root = defaults.get('root-user', os.environ.get('VCS_ROOT_USER'))
+                self.token = defaults.get('token', os.environ.get('VCS_TOKEN'))
                 self.user = defaults.get('user', os.environ.get('VCS_USER'))
                 self.password = defaults.get('password', os.environ.get('VCS_PASSWORD'))
         else:

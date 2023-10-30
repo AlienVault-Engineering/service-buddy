@@ -13,7 +13,6 @@ class GitHubVCSProvider(object):
     def get_type(cls):
         return 'github'
 
-
     def __init__(self, ):
         super(GitHubVCSProvider, self).__init__()
         self.repo_root = ""
@@ -47,7 +46,8 @@ class GitHubVCSProvider(object):
                     ssh_url = None
             return ssh_url
         except HTTPError:
-            logging.info("Could not find repository through github API - {}".format(service_definition.get_repository_name()))
+            logging.info(
+                "Could not find repository through github API - {}".format(service_definition.get_repository_name()))
 
     def create_repo(self, service_defintion):
         # name, description=github.GithubObject.NotSet,
@@ -73,7 +73,7 @@ class GitHubVCSProvider(object):
             repo = self.client.create_repo(**payload)
             return repo.ssh_url
 
-    def update_repo_metadata(self, service_definition:Service):
+    def update_repo_metadata(self, service_definition: Service):
         for repo in self.client.get_repos():
             if repo.name == service_definition.get_fully_qualified_service_name():
                 repo.edit(description=service_definition.get_description())

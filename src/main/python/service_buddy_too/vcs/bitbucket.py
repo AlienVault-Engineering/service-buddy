@@ -20,18 +20,23 @@ class BitbucketVCSProvider(object):
         self.repo_root = ""
         self.workspace_name: str = None
         self.root_workspace: Workspace = None
+        self.token = None
         self.user = None
         self.password = None
 
-    def init(self, user, password, repo_root):
-        if user and password:
-            client = Cloud(url="https://api.bitbucket.org/", username=user, password=password)
+    def init(self, token, user, password, repo_root):
+        if token:
+            client = Cloud(url="https://api.bitbucket.org/", token=token)
+            self.token = token
             self.root_workspace = client.workspaces.get(repo_root)
+        elif user and password:
+            client = Cloud(url="https://api.bitbucket.org/", username=user, password=password)
             self.user = user
             self.password = password
+            self.root_workspace = client.workspaces.get(repo_root)
         else:
             logging.info("VCS username and password not configured - assuming git executable has appropriate "
-                            "authorization for repo checks")
+                         "authorization for repo checks")
 
         self.workspace_name = repo_root
 
@@ -47,7 +52,7 @@ class BitbucketVCSProvider(object):
                 )
                 exists = result == 0
         if exists:
-            logging.info(f"Found repo for {service_definition.get_fully_qualified_service_name()}: {bitbucket_url}" )
+            logging.info(f"Found repo for {service_definition.get_fully_qualified_service_name()}: {bitbucket_url}")
             logging.warning(".")
         else:
             logging.info(f"Could not find repository - {service_definition.get_repository_name()}")
@@ -55,8 +60,9 @@ class BitbucketVCSProvider(object):
         return bitbucket_url
 
     def _get_git_url(self, service_definition):
-        if self.user: #assume has auth if user set
-            # git remote set-url origin https://<your username>:${APP_SECRET}@bitbucket.org/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}
+        if self.token:  # Assume we're using a workspace token
+            bit_prefix = f"https://x-token-auth:{self.token}"
+        elif self.user:  # assume has auth if user set
             bit_prefix = f"https://{self.user}:{self.password}"
         else:
             bit_prefix = f"ssh://git"
@@ -78,14 +84,15 @@ class BitbucketVCSProvider(object):
                                                               description=service_definition.get_app(),
                                                               is_private=True)
             repo = self.root_workspace.repositories.create(project_key=project_key,
-                                                           repo_slug=service_definition.get_repository_name().replace('-','_'),
+                                                           repo_slug=service_definition.get_repository_name().replace(
+                                                               '-', '_'),
                                                            is_private=True, fork_policy=WorkspaceRepositories.NO_FORKS)
             repo.description = service_definition.get_description()
             repo.name = service_definition.get_fully_qualified_service_name()
 
         return self._get_git_url(service_definition)
 
-    def update_repo_metadata(self,service_definition:Service):
+    def update_repo_metadata(self, service_definition: Service):
         if not self.root_workspace:
             logging.warning("Skipping repo metadata update due to lack of username and password")
             return
